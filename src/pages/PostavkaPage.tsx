@@ -1,39 +1,131 @@
 import React from 'react';
-import { Truck, FileCheck, Languages, AlertCircle, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Truck, FileCheck, Languages, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface Props {
   onNavigate: (path: string) => void;
   onOpenQuoteModal: (categorySlug?: string) => void;
 }
 
-export const PostavkaPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
-  const steps = [
-    {
-      num: '01',
-      title: 'Технический подбор и ТКП',
-      desc: 'Анализ однолинейной схемы или ТЗ, выбор профильного китайского завода, расчёт стоимости оборудования.',
-    },
-    {
-      num: '02',
-      title: 'Спецификация и договор',
-      desc: 'Фиксация технических параметров, чертежей общего вида, состава документации и языка протоколов испытаний.',
-    },
-    {
-      num: '03',
-      title: 'Производство и испытания',
-      desc: 'Изготовление на заводе КНР, прохождение приёмо-сдаточных тестов с формированием заводского Test Report.',
-    },
-    {
-      num: '04',
-      title: 'Экспортная очистка в КНР',
-      desc: 'Доставка оборудования до Маньчжурии, таможенное оформление экспорта силами продавца.',
-    },
-    {
-      num: '05',
-      title: 'Передача груза (FCA)',
-      desc: 'Передача оборудования назначенному покупателем российскому авто- или ж/д перевозчику.',
-    },
-  ];
+export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
+  const { t, language } = useLanguage();
+
+  const getSteps = () => {
+    if (language === 'zh') {
+      return [
+        {
+          num: '01',
+          title: '技术选型与商务测算',
+          desc: '核实一次接线图或技术协议，精选专业对口工厂，快速核算设备出厂价。',
+        },
+        {
+          num: '02',
+          title: '技术规格书与商务合同',
+          desc: '确认技术参数、外形安装尺寸图（GA Drawing）、随车技术单据清单及出厂铭牌语言。',
+        },
+        {
+          num: '03',
+          title: '车间制造与出厂试验',
+          desc: '在中国制造基地组织生产，按国际标准完成绝缘耐压等全套出厂试验并出具 Test Report。',
+        },
+        {
+          num: '04',
+          title: '满洲里口岸出口报关',
+          desc: '设备安全运抵满洲里货运口岸，卖方负责完成全套中国海关出口清关放行手续。',
+        },
+        {
+          num: '05',
+          title: 'FCA 货权移交与起运',
+          desc: '在约定的铁路集装箱场站或公路口岸移交买方指定的国际承运人。',
+        },
+      ];
+    }
+
+    if (language === 'en') {
+      return [
+        {
+          num: '01',
+          title: 'Technical Sourcing & Quoting',
+          desc: 'Analysis of single-line diagram or technical spec, factory matching, and direct pricing calculation.',
+        },
+        {
+          num: '02',
+          title: 'Specification & Contract',
+          desc: 'Finalization of electrical parameters, outline drawings, documentation scope, and rating plate language.',
+        },
+        {
+          num: '03',
+          title: 'Production & Factory Testing',
+          desc: 'Fabrication at qualified PRC plant, rigorous dielectric/routine tests, and issuance of certified Test Report.',
+        },
+        {
+          num: '04',
+          title: 'PRC Export Customs Clearance',
+          desc: 'Transport of equipment to Manzhouli border station, full export customs clearance handled by seller.',
+        },
+        {
+          num: '05',
+          title: 'FCA Cargo Handover',
+          desc: 'Handover of cleared equipment to buyer’s nominated international road or rail carrier.',
+        },
+      ];
+    }
+
+    return [
+      {
+        num: '01',
+        title: 'Технический подбор и ТКП',
+        desc: 'Анализ однолинейной схемы или ТЗ, выбор профильного китайского завода, расчёт стоимости оборудования.',
+      },
+      {
+        num: '02',
+        title: 'Спецификация и договор',
+        desc: 'Фиксация технических параметров, чертежей общего вида, состава документации и языка протоколов испытаний.',
+      },
+      {
+        num: '03',
+        title: 'Производство и испытания',
+        desc: 'Изготовление на заводе КНР, прохождение приёмо-сдаточных тестов с формированием заводского Test Report.',
+      },
+      {
+        num: '04',
+        title: 'Экспортная очистка в КНР',
+        desc: 'Доставка оборудования до Маньчжурии, таможенное оформление экспорта силами продавца.',
+      },
+      {
+        num: '05',
+        title: 'Передача груза (FCA)',
+        desc: 'Передача оборудования назначенному покупателем российскому авто- или ж/д перевозчику.',
+      },
+    ];
+  };
+
+  const steps = getSteps();
+
+  const docItems =
+    language === 'zh'
+      ? [
+          '商业发票 (Commercial Invoice)',
+          '装箱单 (Packing List，含毛重与净重)',
+          '中国海关正本出口报关单据',
+          '变压器工厂出厂试验报告 (Test Report)',
+          '产品合格证、说明书及原产地证（按需）',
+        ]
+      : language === 'en'
+      ? [
+          'Commercial Invoice with full HS code specification',
+          'Detailed Packing List with gross/net dimensions',
+          'PRC Export Customs Declaration',
+          'Certified Factory Test Report',
+          'Manufacturer Quality Passport & Operations Manual',
+        ]
+      : [
+          'Коммерческий инвойс (Commercial Invoice)',
+          'Упаковочный лист (Packing List) с весами',
+          'Экспортные таможенные документы КНР',
+          'Протокол заводских испытаний изделий',
+          'Паспорт и руководство по эксплуатации',
+        ];
 
   return (
     <div className="space-y-12">
@@ -42,13 +134,13 @@ export const PostavkaPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) 
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="max-w-3xl">
             <span className="text-xs font-bold text-[#e6a417] uppercase tracking-wider bg-white/10 px-3 py-1 rounded-md inline-block mb-3">
-              Международная логистика и ВЭД
+              {t.postavka.badge}
             </span>
             <h1 className="text-3xl sm:text-4xl font-black text-white">
-              Условия поставки и импорта
+              {t.postavka.title}
             </h1>
             <p className="text-sm sm:text-base text-slate-200 mt-3 leading-relaxed">
-              Базис поставки — <strong>FCA Маньчжурия согласно Инкотермс 2020</strong>. Прозрачный регламент передачи оборудования, полный пакет сопроводительных документов и заводских протоколов.
+              {t.postavka.desc}
             </p>
           </div>
         </div>
@@ -62,12 +154,12 @@ export const PostavkaPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) 
             <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0b3d66] flex items-center justify-center">
               <Truck className="w-6 h-6" />
             </div>
-            <h2 className="text-lg font-black text-navy">Базис поставки</h2>
+            <h2 className="text-lg font-black text-navy">{t.postavka.c1Title}</h2>
             <p className="text-xs text-slate-600 leading-relaxed">
-              При условиях <strong>FCA Маньчжурия (Free Carrier Manzhouli)</strong> продавец передаёт готовый товар назначенному покупателем перевозчику в согласованном терминале / ж/д станции и полностью выполняет экспортное таможенное оформление.
+              {t.postavka.c1Desc}
             </p>
             <p className="text-xs text-slate-500 border-t border-slate-100 pt-3">
-              Дальнейшую транспортировку по территории РФ, транзитное страхование и ввозные таможенные процедуры осуществляет покупатель.
+              {t.postavka.c1Sub}
             </p>
           </div>
 
@@ -76,28 +168,14 @@ export const PostavkaPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) 
             <div className="w-12 h-12 rounded-xl bg-amber-50 text-[#e6a417] flex items-center justify-center">
               <FileCheck className="w-6 h-6" />
             </div>
-            <h2 className="text-lg font-black text-navy">Пакет документов</h2>
+            <h2 className="text-lg font-black text-navy">{t.postavka.c2Title}</h2>
             <ul className="space-y-2 text-xs text-slate-700">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Коммерческий инвойс (Commercial Invoice).</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Упаковочный лист (Packing List) с весами.</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Экспортные таможенные документы КНР.</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Протокол заводских испытаний изделий.</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Паспорт и руководство по эксплуатации.</span>
-              </li>
+              {docItems.map((doc, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{doc}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -106,12 +184,12 @@ export const PostavkaPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) 
             <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <Languages className="w-6 h-6" />
             </div>
-            <h2 className="text-lg font-black text-navy">Язык документации</h2>
+            <h2 className="text-lg font-black text-navy">{t.postavka.c3Title}</h2>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Протоколы испытаний и руководство по эксплуатации могут быть предоставлены на <strong>русском языке опционально</strong>.
+              {t.postavka.c3Desc}
             </p>
             <p className="text-xs text-slate-600 border-t border-slate-100 pt-3 leading-relaxed">
-              Необходимый язык шильдов, предупреждающих табличек и комплектность документации рекомендуется заранее зафиксировать в спецификации к контракту.
+              {t.postavka.c3Sub}
             </p>
           </div>
         </div>
@@ -122,10 +200,10 @@ export const PostavkaPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) 
         <div className="bg-white rounded-3xl border border-surface-border p-6 sm:p-10 shadow-sm">
           <div className="max-w-2xl mb-8">
             <span className="text-xs font-bold text-[#0b3d66] uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">
-              Порядок взаимодействия
+              {t.postavka.stepsTitle}
             </span>
             <h3 className="text-xl sm:text-2xl font-black text-navy mt-2">
-              Этапы поставки трансформаторного оборудования
+              {t.postavka.stepsSub}
             </h3>
           </div>
 
@@ -162,9 +240,19 @@ export const PostavkaPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) 
         <div className="bg-[#fff7e6] border-l-4 border-l-[#e6a417] p-6 rounded-r-2xl shadow-sm flex items-start gap-4">
           <AlertCircle className="w-6 h-6 text-[#e6a417] shrink-0 mt-0.5" />
           <div className="text-xs text-slate-700 space-y-1">
-            <strong className="text-navy text-sm block">Важно перед заключением контракта:</strong>
+            <strong className="text-navy text-sm block">
+              {language === 'zh'
+                ? '签约前关键要点提示：'
+                : language === 'en'
+                ? 'Key Points Before Contract Sign-off:'
+                : 'Важно перед заключением контракта:'}
+            </strong>
             <p className="leading-relaxed">
-              До заключения контракта согласуйте маршрут перевозки, аккредитованного перевозчика, желаемые сроки, специальные требования к экспортной упаковке (деревянные клети по стандартам ISPM 15), транспортной маркировке и полному комплекту документов для таможенного оформления в РФ.
+              {language === 'zh'
+                ? '签约前双方将明确落实：国际运输承运人、满洲里口岸交割场站、出口实木熏蒸木箱包装（符合 ISPM 15 国际植物检疫标准）、防水防潮真空铝箔包装及技术清关单据。'
+                : language === 'en'
+                ? 'Before signing the purchase contract, please confirm the carrier, target terminal in Manzhouli, export packaging requirements (ISPM 15 heat-treated timber crates, moisture-proof barrier foil), and the complete customs document set.'
+                : 'До заключения контракта согласуйте маршрут перевозки, аккредитованного перевозчика, желаемые сроки, специальные требования к экспортной упаковке (деревянные клети по стандартам ISPM 15), транспортной маркировке и полному комплекту документов для таможенного оформления.'}
             </p>
           </div>
         </div>
@@ -174,17 +262,27 @@ export const PostavkaPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) 
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="bg-[#0b3d66] text-white rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl font-bold">Остались вопросы по условиям FCA Маньчжурия?</h3>
+            <h3 className="text-xl font-bold">
+              {language === 'zh'
+                ? '对 FCA 满洲里交货流程有任何疑问？'
+                : language === 'en'
+                ? 'Questions regarding FCA Manzhouli delivery procedures?'
+                : 'Остались вопросы по условиям FCA Маньчжурия?'}
+            </h3>
             <p className="text-xs text-slate-300 mt-1">
-              Наш специалист по ВЭД предоставит подробную консультацию по процедуре отгрузки.
+              {language === 'zh'
+                ? '我司外贸部工程师可提供详细流程解答与物流节点对接说明。'
+                : language === 'en'
+                ? 'Our international trade department will provide detailed guidance on the dispatch protocol.'
+                : 'Наш специалист по ВЭД предоставит подробную консультацию по процедуре отгрузки.'}
             </p>
           </div>
           <button
             type="button"
             onClick={() => onOpenQuoteModal()}
-            className="bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shrink-0"
+            className="bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shrink-0 cursor-pointer"
           >
-            Запросить консультацию
+            {t.nav.rfq}
           </button>
         </div>
       </section>

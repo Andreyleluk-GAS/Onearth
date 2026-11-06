@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { TransformerCategory, TransformerSpec } from '../types/transformer';
+import { TransformerCategory } from '../types/transformer';
 import { TechnicalLossChart } from '../components/TechnicalLossChart';
-import { ShieldCheck, CheckCircle2, ChevronRight, FileText, ArrowRight, Zap, Phone, Mail, Sliders } from 'lucide-react';
-import { getRelatedCategories } from '../data/transformerCatalog';
+import { CheckCircle2, ChevronRight, Zap, Mail, Sliders } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface Props {
   category: TransformerCategory;
@@ -15,24 +15,28 @@ export const CategoryDetailPage: React.FC<Props> = ({
   onNavigate,
   onOpenQuoteModal,
 }) => {
+  const { t, language, categories } = useLanguage();
   const [selectedPowerFilter, setSelectedPowerFilter] = useState<number | 'all'>('all');
-  const related = getRelatedCategories(category.slug);
+
+  const related = categories.filter((c) => c.slug !== category.slug).slice(0, 3);
 
   const displayedSpecs = selectedPowerFilter === 'all'
     ? category.specs
     : category.specs.filter((s) => s.power_kva === selectedPowerFilter);
+
+  const ipBase = language === 'zh' ? 'IP00（本体）/ IP31' : language === 'en' ? 'IP00 (Base) / IP31' : 'IP00 (базовая) / IP31';
 
   return (
     <div className="space-y-12">
       {/* Breadcrumb Navigation */}
       <div className="bg-slate-100 border-b border-surface-border py-2.5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-1.5 text-xs text-slate-500">
-          <button type="button" onClick={() => onNavigate('/')} className="hover:text-navy">
-            Главная
+          <button type="button" onClick={() => onNavigate('/')} className="hover:text-navy cursor-pointer">
+            {t.categoryDetail.breadcrumbHome}
           </button>
           <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <button type="button" onClick={() => onNavigate('/katalog')} className="hover:text-navy">
-            Каталог
+          <button type="button" onClick={() => onNavigate('/katalog')} className="hover:text-navy cursor-pointer">
+            {t.categoryDetail.breadcrumbCatalog}
           </button>
           <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
           <span className="text-navy font-bold truncate">{category.shortTitle}</span>
@@ -46,15 +50,15 @@ export const CategoryDetailPage: React.FC<Props> = ({
           <div className="lg:col-span-7 space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <span className="bg-[#0b3d66] text-white text-xs font-black px-2.5 py-1 rounded-md">
-                Класс напряжения: {category.voltageClass} кВ
+                {t.categoryDetail.voltageBadge} {category.voltageClass} {t.catalogShowcase.voltage}
               </span>
               {category.lossClass === 'low_loss' && (
                 <span className="bg-[#e6a417] text-[#072640] text-xs font-black px-2.5 py-1 rounded-md uppercase tracking-wider">
-                  Пониженные потери
+                  {t.categoryDetail.lowLossBadge}
                 </span>
               )}
               <span className="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-md">
-                FCA Маньчжурия
+                {t.categoryDetail.fcaBadge}
               </span>
             </div>
 
@@ -69,28 +73,30 @@ export const CategoryDetailPage: React.FC<Props> = ({
             {/* Quick Specs Badges */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
               <div className="bg-[#f6f8fa] p-3 rounded-xl border border-slate-200">
-                <span className="text-slate-400 block text-[11px]">Мощность:</span>
-                <strong className="text-navy text-sm font-bold">630 – 2500 кВА</strong>
+                <span className="text-slate-400 block text-[11px]">{t.categoryDetail.powerLabel}</span>
+                <strong className="text-navy text-sm font-bold">{t.categoryDetail.powerVal}</strong>
               </div>
               <div className="bg-[#f6f8fa] p-3 rounded-xl border border-slate-200">
-                <span className="text-slate-400 block text-[11px]">Напряжение ВН:</span>
+                <span className="text-slate-400 block text-[11px]">{t.categoryDetail.voltageHVLabel}</span>
                 <strong className="text-navy text-sm font-bold truncate block">{category.voltageHV}</strong>
               </div>
               <div className="bg-[#f6f8fa] p-3 rounded-xl border border-slate-200">
-                <span className="text-slate-400 block text-[11px]">Напряжение НН:</span>
+                <span className="text-slate-400 block text-[11px]">{t.categoryDetail.voltageLVLabel}</span>
                 <strong className="text-navy text-sm font-bold">{category.voltageLV}</strong>
               </div>
               <div className="bg-[#f6f8fa] p-3 rounded-xl border border-slate-200">
-                <span className="text-slate-400 block text-[11px]">Схема соединения:</span>
+                <span className="text-slate-400 block text-[11px]">{t.categoryDetail.connectionLabel}</span>
                 <strong className="text-navy text-sm font-bold">{category.connectionGroup}</strong>
               </div>
               <div className="bg-[#f6f8fa] p-3 rounded-xl border border-slate-200">
-                <span className="text-slate-400 block text-[11px]">Регулирование:</span>
+                <span className="text-slate-400 block text-[11px]">{t.categoryDetail.regulationLabel}</span>
                 <strong className="text-navy text-sm font-bold">{category.regulationType}</strong>
               </div>
               <div className="bg-[#f6f8fa] p-3 rounded-xl border border-slate-200">
-                <span className="text-slate-400 block text-[11px]">Степень защиты:</span>
-                <strong className="text-navy text-sm font-bold">IP00 (базовая) / IP31</strong>
+                <span className="text-slate-400 block text-[11px]">
+                  {language === 'zh' ? '防护等级：' : language === 'en' ? 'Ingress Protection:' : 'Степень защиты:'}
+                </span>
+                <strong className="text-navy text-sm font-bold">{ipBase}</strong>
               </div>
             </div>
 
@@ -99,10 +105,10 @@ export const CategoryDetailPage: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => onOpenQuoteModal(category.slug)}
-                className="bg-[#0b3d66] hover:bg-navy-dark text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 flex items-center gap-2"
+                className="bg-[#0b3d66] hover:bg-navy-dark text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 <Zap className="w-4 h-4 text-[#e6a417]" />
-                Запросить КП и спецификацию
+                {t.categoryDetail.getQuoteBtn}
               </button>
 
               <a
@@ -123,21 +129,11 @@ export const CategoryDetailPage: React.FC<Props> = ({
               className="max-h-72 object-contain drop-shadow-md"
             />
             <div className="text-[11px] text-slate-500 mt-4 text-center">
-              Фотореалистичное исполнение силового трансформатора {category.shortTitle}
+              {t.categoryDetail.photoAlt} {category.shortTitle}
             </div>
           </div>
         </div>
       </section>
-
-      {/* Oil Application Area (if applicable) */}
-      {category.applicationArea && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 text-xs text-navy">
-            <strong className="text-sm block mb-1">Область применения:</strong>
-            <p className="leading-relaxed">{category.applicationArea}</p>
-          </div>
-        </section>
-      )}
 
       {/* Technical Specifications Table Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -145,35 +141,39 @@ export const CategoryDetailPage: React.FC<Props> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
             <div>
               <h2 className="text-xl font-black text-navy">
-                Технические характеристики и потери
+                {t.categoryDetail.specsTableTitle}
               </h2>
               <p className="text-xs text-slate-500">
-                Заводские параметры: потери холостого хода P₀, потери КЗ Pкз, ток Ixx и напряжение КЗ Uк
+                {language === 'zh'
+                  ? '工厂实测电气参数：空载损耗 P₀、负载损耗 P_k、空载电流 I₀ 及阻抗电压 U_k'
+                  : language === 'en'
+                  ? 'Factory technical matrix: no-load loss P₀, load loss P_k, no-load current I₀, and impedance U_k'
+                  : 'Заводские параметры: потери холостого хода P₀, потери КЗ Pкз, ток Ixx и напряжение КЗ Uк'}
               </p>
             </div>
 
             {/* Quick power filter chips */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              <span className="text-xs text-slate-400 font-semibold mr-1">Фильтр:</span>
+              <span className="text-xs text-slate-400 font-semibold mr-1">{t.categoryDetail.filterByPower}</span>
               <button
                 type="button"
                 onClick={() => setSelectedPowerFilter('all')}
-                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                   selectedPowerFilter === 'all'
-                    ? 'bg-navy text-white'
+                    ? 'bg-[#0b3d66] text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                Все
+                {t.categoryDetail.allPowers}
               </button>
               {[630, 800, 1000, 1250, 1600, 2000, 2500].map((p) => (
                 <button
                   key={p}
                   type="button"
                   onClick={() => setSelectedPowerFilter(p)}
-                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                     selectedPowerFilter === p
-                      ? 'bg-navy text-white'
+                      ? 'bg-[#0b3d66] text-white'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -188,30 +188,30 @@ export const CategoryDetailPage: React.FC<Props> = ({
             <table className="w-full text-xs text-center border-collapse min-w-[860px]">
               <thead>
                 <tr className="bg-[#0b3d66] text-white text-[11px] uppercase tracking-wider">
-                  <th className="py-3 px-3 font-bold text-left rounded-tl-lg">Мощность, кВА</th>
-                  <th className="py-3 px-3 font-bold">ВН, кВ</th>
-                  <th className="py-3 px-3 font-bold">НН, кВ</th>
-                  <th className="py-3 px-3 font-bold">Схема / группа</th>
-                  <th className="py-3 px-3 font-bold bg-[#072640]">Потери ХХ (P₀), Вт</th>
+                  <th className="py-3 px-3 font-bold text-left rounded-tl-lg">{t.categoryDetail.thPower}</th>
+                  <th className="py-3 px-3 font-bold">{t.categoryDetail.thHV}</th>
+                  <th className="py-3 px-3 font-bold">{t.categoryDetail.thLV}</th>
+                  <th className="py-3 px-3 font-bold">{t.categoryDetail.thGroup}</th>
+                  <th className="py-3 px-3 font-bold bg-[#072640]">{t.categoryDetail.thP0}</th>
 
                   {category.tableType === 'dry_f_h' && (
                     <>
-                      <th className="py-3 px-3 font-bold">Pкз F (120°C), Вт</th>
-                      <th className="py-3 px-3 font-bold">Pкз H (145°C), Вт</th>
+                      <th className="py-3 px-3 font-bold">{t.categoryDetail.thPkzF}</th>
+                      <th className="py-3 px-3 font-bold">{t.categoryDetail.thPkzH}</th>
                     </>
                   )}
 
                   {category.tableType === 'dry_h' && (
-                    <th className="py-3 px-3 font-bold">Pкз H (145°C), Вт</th>
+                    <th className="py-3 px-3 font-bold">{t.categoryDetail.thPkzH}</th>
                   )}
 
                   {category.tableType === 'oil' && (
-                    <th className="py-3 px-3 font-bold">Потери КЗ, Вт</th>
+                    <th className="py-3 px-3 font-bold">{t.categoryDetail.thPkz}</th>
                   )}
 
-                  <th className="py-3 px-3 font-bold">Ixx, %</th>
-                  <th className="py-3 px-3 font-bold">Uк, %</th>
-                  <th className="py-3 px-3 font-bold text-right rounded-tr-lg">КП</th>
+                  <th className="py-3 px-3 font-bold">{t.categoryDetail.thI0}</th>
+                  <th className="py-3 px-3 font-bold">{t.categoryDetail.thUk}</th>
+                  <th className="py-3 px-3 font-bold text-right rounded-tr-lg">{t.categoryDetail.thAction}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 text-slate-800">
@@ -223,7 +223,7 @@ export const CategoryDetailPage: React.FC<Props> = ({
                     }`}
                   >
                     <td className="py-3 px-3 font-bold text-navy text-left text-sm">
-                      {spec.power_kva} кВА
+                      {spec.power_kva} kVA
                     </td>
                     <td className="py-3 px-3 font-medium text-slate-600">
                       {spec.voltage_hv_str || category.voltageHV}
@@ -235,29 +235,29 @@ export const CategoryDetailPage: React.FC<Props> = ({
                       {spec.connection_group || category.connectionGroup}
                     </td>
                     <td className="py-3 px-3 font-mono font-black text-navy bg-slate-50/80">
-                      {spec.p0_w.toLocaleString('ru-RU')}
+                      {spec.p0_w.toLocaleString()}
                     </td>
 
                     {category.tableType === 'dry_f_h' && (
                       <>
                         <td className="py-3 px-3 font-mono font-semibold text-slate-700">
-                          {spec.pkz_f_w?.toLocaleString('ru-RU') || '—'}
+                          {spec.pkz_f_w?.toLocaleString() || '—'}
                         </td>
                         <td className="py-3 px-3 font-mono font-semibold text-slate-700">
-                          {spec.pkz_h_w?.toLocaleString('ru-RU') || '—'}
+                          {spec.pkz_h_w?.toLocaleString() || '—'}
                         </td>
                       </>
                     )}
 
                     {category.tableType === 'dry_h' && (
                       <td className="py-3 px-3 font-mono font-semibold text-slate-700">
-                        {spec.pkz_h_w?.toLocaleString('ru-RU')}
+                        {spec.pkz_h_w?.toLocaleString()}
                       </td>
                     )}
 
                     {category.tableType === 'oil' && (
                       <td className="py-3 px-3 font-mono font-semibold text-slate-700">
-                        {spec.pkz_w?.toLocaleString('ru-RU')}
+                        {spec.pkz_w?.toLocaleString()}
                       </td>
                     )}
 
@@ -271,9 +271,9 @@ export const CategoryDetailPage: React.FC<Props> = ({
                       <button
                         type="button"
                         onClick={() => onOpenQuoteModal(category.slug, String(spec.power_kva))}
-                        className="bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] px-3 py-1.5 rounded-lg font-bold text-xs transition-transform active:scale-95"
+                        className="bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] px-3 py-1.5 rounded-lg font-bold text-xs transition-transform active:scale-95 cursor-pointer"
                       >
-                        Запрос
+                        {t.categoryDetail.calcQuote}
                       </button>
                     </td>
                   </tr>
@@ -295,9 +295,9 @@ export const CategoryDetailPage: React.FC<Props> = ({
           {/* Standard Equipment */}
           <div className="bg-white rounded-2xl border border-surface-border p-6 shadow-sm space-y-4">
             <div className="flex items-center gap-2 text-navy border-b border-slate-100 pb-3">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
               <h3 className="text-base font-black uppercase tracking-wider">
-                Стандартная комплектация
+                {t.categoryDetail.standardEqTitle}
               </h3>
             </div>
 
@@ -316,9 +316,9 @@ export const CategoryDetailPage: React.FC<Props> = ({
           {/* Available Options */}
           <div className="bg-white rounded-2xl border border-surface-border p-6 shadow-sm space-y-4">
             <div className="flex items-center gap-2 text-navy border-b border-slate-100 pb-3">
-              <Sliders className="w-5 h-5 text-[#e6a417]" />
+              <Sliders className="w-5 h-5 text-[#e6a417] shrink-0" />
               <h3 className="text-base font-black uppercase tracking-wider">
-                Доступные опции под заказ
+                {t.categoryDetail.optionsTitle}
               </h3>
             </div>
 
@@ -336,19 +336,19 @@ export const CategoryDetailPage: React.FC<Props> = ({
         </div>
       </section>
 
-      {/* Consultation Banner (Client Note verbatim) */}
+      {/* Consultation Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="bg-[#fff7e6] border-l-4 border-l-[#e6a417] p-6 rounded-r-2xl shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-1">
             <h4 className="text-base font-black text-navy">
-              Нужна консультация или расчёт?
+              {language === 'zh' ? '需要技术咨询或定制方案核算？' : language === 'en' ? 'Need Consultation or Cost Estimation?' : 'Нужна консультация или расчёт?'}
             </h4>
             <p className="text-xs text-slate-700 max-w-2xl leading-relaxed">
-              Отправьте опросный лист, техническое задание или параметры проекта на{' '}
-              <a href="mailto:mail@mail.ru" className="font-bold text-navy underline">
-                mail@mail.ru
-              </a>{' '}
-              — подготовим коммерческое предложение с технической документацией и расчётом доставки FCA Маньчжурия.
+              {language === 'zh'
+                ? '请将采购单、技术规格书或工程图纸发送至 mail@mail.ru — 我们将为您提供完备的工厂技术方案与 FCA 满洲里交付报价。'
+                : language === 'en'
+                ? 'Send your questionnaire, technical assignment, or project parameters to mail@mail.ru — we will prepare a full commercial offer with technical documentation and FCA Manzhouli delivery calculation.'
+                : 'Отправьте опросный лист, техническое задание или параметры проекта на mail@mail.ru — подготовим коммерческое предложение с технической документацией и расчётом доставки FCA Маньчжурия.'}
             </p>
           </div>
 
@@ -356,15 +356,15 @@ export const CategoryDetailPage: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => onOpenQuoteModal(category.slug)}
-              className="bg-[#0b3d66] hover:bg-navy-dark text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md transition-all active:scale-95"
+              className="bg-[#0b3d66] hover:bg-navy-dark text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 cursor-pointer"
             >
-              Запросить КП
+              {t.nav.rfq}
             </button>
             <a
               href="tel:+73431234567"
               className="bg-white hover:bg-slate-50 text-navy border border-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors"
             >
-              Позвонить
+              +7 (343) 123-45-67
             </a>
           </div>
         </div>
@@ -373,7 +373,7 @@ export const CategoryDetailPage: React.FC<Props> = ({
       {/* Related Categories Navigation */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">
-          Другие категории оборудования:
+          {t.categoryDetail.relatedTitle}:
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {related.map((rel) => (
@@ -381,16 +381,16 @@ export const CategoryDetailPage: React.FC<Props> = ({
               key={rel.slug}
               type="button"
               onClick={() => onNavigate(`/katalog/${rel.slug}`)}
-              className="bg-white p-4 rounded-xl border border-surface-border text-left hover:border-navy hover:shadow-md transition-all group"
+              className="bg-white p-4 rounded-xl border border-surface-border text-left hover:border-navy hover:shadow-md transition-all group cursor-pointer"
             >
               <span className="text-[10px] font-bold text-[#e6a417] uppercase tracking-wider">
-                {rel.voltageClass} кВ
+                {rel.voltageClass} {t.catalogShowcase.voltage}
               </span>
               <h4 className="text-xs font-bold text-navy group-hover:text-navy-light mt-1 line-clamp-1">
                 {rel.shortTitle}
               </h4>
               <span className="text-[11px] text-slate-400 mt-2 inline-flex items-center gap-1 group-hover:text-navy">
-                Перейти к характеристикам →
+                {language === 'zh' ? '查看技术规格 →' : language === 'en' ? 'View Specifications →' : 'Перейти к характеристикам →'}
               </span>
             </button>
           ))}

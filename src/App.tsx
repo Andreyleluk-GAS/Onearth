@@ -8,7 +8,7 @@ import { CategoryDetailPage } from './pages/CategoryDetailPage';
 import { PoTzPage } from './pages/PoTzPage';
 import { PostavkaPage } from './pages/PostavkaPage';
 import { KontaktyPage } from './pages/KontaktyPage';
-import { TRANSFORMER_CATEGORIES, getCategoryBySlug } from './data/transformerCatalog';
+import { useLanguage } from './i18n/LanguageContext';
 import { Grid, FileText, Truck, Phone, Zap } from 'lucide-react';
 
 const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
@@ -22,6 +22,7 @@ const normalizePath = (fullPath: string): string => {
 };
 
 export const App: React.FC = () => {
+  const { t, getCategory, categories } = useLanguage();
   const [currentPath, setCurrentPath] = useState<string>(() => {
     return typeof window !== 'undefined'
       ? normalizePath(window.location.pathname)
@@ -76,13 +77,13 @@ export const App: React.FC = () => {
       categorySlug = cleanPath.replace('/katalog/', '').replace('.html', '');
     } else {
       const directSlug = cleanPath.replace(/^\//, '').replace('.html', '');
-      if (TRANSFORMER_CATEGORIES.some((c) => c.slug === directSlug)) {
+      if (categories.some((c) => c.slug === directSlug)) {
         categorySlug = directSlug;
       }
     }
 
     if (categorySlug) {
-      const category = getCategoryBySlug(categorySlug);
+      const category = getCategory(categorySlug);
       if (category) {
         return (
           <CategoryDetailPage
@@ -148,7 +149,7 @@ export const App: React.FC = () => {
           }`}
         >
           <Grid className="w-4 h-4 mb-0.5" />
-          Каталог
+          {t.mobileBar.catalog}
         </button>
 
         <button
@@ -159,7 +160,7 @@ export const App: React.FC = () => {
           }`}
         >
           <FileText className="w-4 h-4 mb-0.5" />
-          По ТЗ
+          {t.mobileBar.custom}
         </button>
 
         <button
@@ -170,7 +171,7 @@ export const App: React.FC = () => {
           }`}
         >
           <Truck className="w-4 h-4 mb-0.5" />
-          FCA
+          {t.mobileBar.fca}
         </button>
 
         <a
@@ -178,7 +179,7 @@ export const App: React.FC = () => {
           className="flex-1 py-1 flex flex-col items-center text-[10px] font-bold text-slate-600"
         >
           <Phone className="w-4 h-4 mb-0.5 text-[#e6a417]" />
-          Звонок
+          {t.mobileBar.call}
         </a>
 
         <button
@@ -187,7 +188,7 @@ export const App: React.FC = () => {
           className="flex-1 py-2 px-2 bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] font-black text-xs rounded-xl shadow-md flex items-center justify-center active:scale-95 transition-transform"
         >
           <Zap className="w-3.5 h-3.5 mr-1" />
-          КП
+          {t.mobileBar.rfq}
         </button>
       </div>
     </div>

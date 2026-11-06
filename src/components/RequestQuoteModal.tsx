@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Phone, CheckCircle, Copy, Send } from 'lucide-react';
-import { TRANSFORMER_CATEGORIES } from '../data/transformerCatalog';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface Props {
   isOpen: boolean;
@@ -15,6 +15,7 @@ export const RequestQuoteModal: React.FC<Props> = ({
   initialCategorySlug,
   initialPower,
 }) => {
+  const { t, language, categories } = useLanguage();
   const [categorySlug, setCategorySlug] = useState<string>(initialCategorySlug || 'suhie-litaya-10kv');
   const [power, setPower] = useState<string>(initialPower || '1000');
   const [company, setCompany] = useState('');
@@ -36,14 +37,60 @@ export const RequestQuoteModal: React.FC<Props> = ({
 
   if (!isOpen) return null;
 
-  const currentCategory = TRANSFORMER_CATEGORIES.find((c) => c.slug === categorySlug);
-  const categoryTitle = currentCategory?.title || 'Трансформаторное оборудование';
+  const currentCategory = categories.find((c) => c.slug === categorySlug);
+  const categoryTitle = currentCategory?.title || 'Power Transformers';
 
   const generateEmailSubject = () => {
+    if (language === 'zh') {
+      return encodeURIComponent(`变压器报价申请: ${categoryTitle} — ${power} kVA — ${company || '客户单位'}`);
+    }
+    if (language === 'en') {
+      return encodeURIComponent(`RFQ: ${categoryTitle} — ${power} kVA — ${company || 'Company'}`);
+    }
     return encodeURIComponent(`Запрос КП: ${categoryTitle} — ${power} кВА — ${company || 'Организация'}`);
   };
 
   const generateEmailBodyText = () => {
+    if (language === 'zh') {
+      return [
+        `尊敬的湖北万域贸易有限公司（Hubei Onearth Trading Company Limited）：`,
+        ``,
+        `您好！我方现申请提供以下电力变压器设备的技术规格书与商业报价（FCA 满洲里交货）：`,
+        `— 变压器型号分类：${categoryTitle}`,
+        `— 额定容量：${power} kVA`,
+        `— 交货基准：FCA 满洲里（Incoterms 2020）`,
+        ``,
+        `询价方联系信息：`,
+        `— 单位名称：${company || '未填写'}`,
+        `— 联系人：${contactName || '未填写'}`,
+        `— 联系电话：${phone || '未填写'}`,
+        `— 电子邮箱：${email || '未填写'}`,
+        comment ? `— 特殊技术要求/备注：${comment}` : '',
+        ``,
+        `请将技术方案与报价文件回复至此电子邮箱。`,
+      ].filter(Boolean).join('\n');
+    }
+
+    if (language === 'en') {
+      return [
+        `Dear Hubei Onearth Trading Company Limited,`,
+        ``,
+        `Please prepare an official commercial quotation and technical datasheet for the following power transformer equipment:`,
+        `— Equipment Type: ${categoryTitle}`,
+        `— Rated Capacity: ${power} kVA`,
+        `— Delivery Basis: FCA Manzhouli (Incoterms 2020)`,
+        ``,
+        `Buyer Contact Information:`,
+        `— Company Name: ${company || 'Not specified'}`,
+        `— Contact Person: ${contactName || 'Not specified'}`,
+        `— Phone Number: ${phone || 'Not specified'}`,
+        `— Email: ${email || 'Not specified'}`,
+        comment ? `— Technical Notes / Requirements: ${comment}` : '',
+        ``,
+        `We look forward to receiving your response at this email address.`,
+      ].filter(Boolean).join('\n');
+    }
+
     return [
       `Здравствуйте, Hubei Onearth Trading Company Limited!`,
       ``,
@@ -96,13 +143,13 @@ export const RequestQuoteModal: React.FC<Props> = ({
           <div>
             <div className="mb-5">
               <span className="text-[11px] font-bold text-[#e6a417] uppercase tracking-wider bg-[#fff7e6] px-2.5 py-1 rounded-md">
-                FCA Маньчжурия · Прямые поставки из Китая
+                {t.nav.fcaBadge}
               </span>
               <h3 className="text-xl sm:text-2xl font-black text-navy mt-2">
-                Запрос коммерческого предложения
+                {t.quoteModal.title}
               </h3>
               <p className="text-xs text-slate-500 mt-1">
-                Подготовим ТКП с техническими параметрами, сроками и ценой от китайского завода-производителя
+                {t.quoteModal.subtitle}
               </p>
             </div>
 
@@ -110,19 +157,25 @@ export const RequestQuoteModal: React.FC<Props> = ({
               {/* Category selector */}
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">
-                  Тип оборудования:
+                  {t.quoteModal.category}
                 </label>
                 <select
                   value={categorySlug}
                   onChange={(e) => setCategorySlug(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
                 >
-                  {TRANSFORMER_CATEGORIES.map((c) => (
+                  {categories.map((c) => (
                     <option key={c.slug} value={c.slug}>
                       {c.shortTitle}
                     </option>
                   ))}
-                  <option value="custom">Изготовление по индивидуальному ТЗ / опросный лист</option>
+                  <option value="custom">
+                    {language === 'zh'
+                      ? '按特定技术协议 / 图纸非标定制'
+                      : language === 'en'
+                      ? 'Custom by Technical Assignment / Questionnaire'
+                      : 'Изготовление по индивидуальному ТЗ / опросный лист'}
+                  </option>
                 </select>
               </div>
 
@@ -130,130 +183,153 @@ export const RequestQuoteModal: React.FC<Props> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Мощность (кВА):
+                    {t.quoteModal.power}
                   </label>
                   <select
                     value={power}
                     onChange={(e) => setPower(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
                   >
-                    {[630, 800, 1000, 1250, 1600, 2000, 2500].map((p) => (
+                    {['630', '800', '1000', '1250', '1600', '2000', '2500'].map((p) => (
                       <option key={p} value={p}>
-                        {p} кВА
+                        {p} kVA
                       </option>
                     ))}
-                    <option value="custom">Другая (по ТЗ)</option>
+                    <option value="custom">
+                      {language === 'zh' ? '其他非标容量' : language === 'en' ? 'Other rating' : 'Иная мощность'}
+                    </option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Телефон для связи:
+                    {t.quoteModal.company}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                    placeholder={language === 'zh' ? '例如：华东电力建设' : language === 'en' ? 'e.g. Industrial Corp' : 'ООО "ЭнергоСтрой"'}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:ring-2 focus:ring-navy focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Contact and Phone */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    {t.quoteModal.name}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    placeholder={language === 'zh' ? '张经理' : language === 'en' ? 'John Doe' : 'Иван Иванов'}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:ring-2 focus:ring-navy focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    {t.quoteModal.phone}
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="+7 (___) ___-__-__"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
+                    placeholder="+7 (___) ___-__-__"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:ring-2 focus:ring-navy focus:outline-none"
                   />
                 </div>
               </div>
 
-              {/* Company & Name */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    Название компании:
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="ООО / АО / Завод"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    Ваш E-mail:
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="mail@company.ru"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Comment / Extra requirements */}
+              {/* Email */}
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">
-                  Требования ТЗ / схема / объект (необязательно):
+                  {t.quoteModal.email}
                 </label>
-                <textarea
-                  rows={2}
-                  placeholder="Укажите напряжение ВН/НН, степень защиты кожуха (IP21/IP31), наличие RS485 или особые климатические условия"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 text-xs focus:ring-2 focus:ring-navy focus:outline-none resize-none"
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@company.com"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:ring-2 focus:ring-navy focus:outline-none"
                 />
               </div>
 
-              {/* Action Buttons */}
-              <div className="pt-2 space-y-2">
+              {/* Comment */}
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  {t.quoteModal.comment}
+                </label>
+                <textarea
+                  rows={2}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder={t.quoteModal.commentPlaceholder}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:ring-2 focus:ring-navy focus:outline-none resize-none"
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="pt-2 flex flex-col sm:flex-row gap-2">
                 <a
                   href={mailtoLink}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-[#0b3d66] hover:bg-[#072640] text-white py-2.5 px-4 rounded-xl font-bold text-xs shadow-md transition-all active:scale-[0.99]"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 text-center"
                 >
-                  <Send className="w-4 h-4 text-[#e6a417]" />
-                  Открыть готовое письмо в почте (mail@mail.ru)
+                  <Mail className="w-4 h-4" />
+                  {t.quoteModal.sendEmailBtn}
                 </a>
 
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={handleCopyText}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 rounded-lg font-semibold text-[11px] transition-colors"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    {isCopied ? 'Параметры скопированы!' : 'Скопировать текст запроса'}
-                  </button>
-
-                  <a
-                    href="tel:+73431234567"
-                    className="inline-flex items-center gap-1.5 bg-[#fff7e6] hover:bg-[#ffeed1] text-[#935d03] py-2 px-3 rounded-lg font-bold text-[11px] transition-colors"
-                  >
-                    <Phone className="w-3.5 h-3.5 text-[#e6a417]" />
-                    +7 (343) 123-45-67
-                  </a>
-                </div>
+                <button
+                  type="button"
+                  onClick={handleCopyText}
+                  className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 px-4 rounded-xl font-bold text-xs transition-colors"
+                >
+                  <Copy className="w-4 h-4" />
+                  {isCopied ? t.quoteModal.copiedBtn : t.quoteModal.copyBtn}
+                </button>
               </div>
+
+              <p className="text-[10px] text-slate-400 text-center pt-1">
+                {t.quoteModal.directNotice}
+              </p>
             </form>
           </div>
         ) : (
-          /* Submission Confirmation View */
           <div className="text-center py-6 space-y-4">
-            <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
               <CheckCircle className="w-8 h-8" />
             </div>
-            <h4 className="text-xl font-bold text-navy">Запрос сформирован</h4>
+            <h4 className="text-xl font-black text-navy">
+              {language === 'zh' ? '需求已成功生成！' : language === 'en' ? 'Inquiry Generated Successfully!' : 'Запрос успешно сформирован!'}
+            </h4>
             <p className="text-xs text-slate-600 max-w-sm mx-auto">
-              Письмо с параметрами заказа готово к отправке на официальную почту{' '}
-              <strong className="text-navy">mail@mail.ru</strong>. Наш специалист свяжется с вами для уточнения деталей.
+              {language === 'zh'
+                ? '请点击下方按钮直接通过邮件发送至 mail@mail.ru，或复制文本发送至我司外贸部。'
+                : language === 'en'
+                ? 'Click below to send via your email client directly to mail@mail.ru, or copy the formatted text.'
+                : 'Нажмите кнопку ниже для отправки готового письма через почтовую программу на mail@mail.ru или скопируйте текст.'}
             </p>
-            <div className="pt-2">
+            <div className="flex flex-col gap-2 pt-2">
+              <a
+                href={mailtoLink}
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#e6a417] text-[#072640] py-2.5 px-4 rounded-xl font-bold text-xs uppercase"
+              >
+                <Send className="w-4 h-4" />
+                {t.quoteModal.sendEmailBtn}
+              </a>
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-navy text-white px-6 py-2 rounded-lg text-xs font-bold"
+                className="text-xs text-slate-400 hover:text-slate-600 py-1"
               >
-                Закрыть окно
+                {t.quoteModal.close}
               </button>
             </div>
           </div>

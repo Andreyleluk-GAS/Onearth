@@ -1,6 +1,6 @@
 import React from 'react';
 import { Phone, Mail, MapPin, ShieldCheck, ArrowUpRight } from 'lucide-react';
-import { TRANSFORMER_CATEGORIES } from '../data/transformerCatalog';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -8,6 +8,8 @@ interface Props {
 }
 
 export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
+  const { t, categories } = useLanguage();
+
   return (
     <footer className="bg-[#0b3d66] text-white border-t border-blue-900 mt-16 pt-12 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -16,28 +18,28 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
           <div className="space-y-4">
             <div>
               <span className="text-xl font-black tracking-tight text-white block">
-                Hubei Onearth Trading
+                {t.footer.companyName}
               </span>
               <span className="text-xs text-slate-300 font-medium">
-                Company Limited
+                {t.footer.companySub}
               </span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Специализируемся на подборе надёжных производителей электротехнического оборудования в Китае. Помогаем российским предприятиям выстраивать прямые поставки трансформаторов 6–35 кВ мощностью 630–2500 кВА.
+              {t.footer.companyDesc}
             </p>
             <div className="inline-flex items-center gap-1.5 text-xs text-[#e6a417] bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
-              <ShieldCheck className="w-4 h-4" />
-              <span>FCA Маньчжурия · Инкотермс 2020</span>
+              <ShieldCheck className="w-4 h-4 shrink-0" />
+              <span>{t.footer.fcaBadge}</span>
             </div>
           </div>
 
           {/* Col 2: Catalog Categories */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#e6a417] mb-3">
-              Каталог оборудования
+              {t.footer.catalogHeader}
             </h4>
             <ul className="space-y-1.5 text-xs text-slate-300">
-              {TRANSFORMER_CATEGORIES.map((cat) => (
+              {categories.map((cat) => (
                 <li key={cat.slug}>
                   <button
                     type="button"
@@ -57,7 +59,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
           {/* Col 3: Sections & Navigation */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#e6a417] mb-3">
-              Информация
+              {t.footer.navHeader}
             </h4>
             <ul className="space-y-2 text-xs text-slate-300">
               <li>
@@ -66,7 +68,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
                   onClick={() => onNavigate('/katalog')}
                   className="hover:text-white transition-colors"
                 >
-                  Общий каталог продукции
+                  {t.nav.catalog}
                 </button>
               </li>
               <li>
@@ -75,7 +77,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
                   onClick={() => onNavigate('/po-tz')}
                   className="hover:text-white transition-colors"
                 >
-                  Изготовление по ТЗ заказчика
+                  {t.nav.custom}
                 </button>
               </li>
               <li>
@@ -84,7 +86,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
                   onClick={() => onNavigate('/postavka')}
                   className="hover:text-white transition-colors"
                 >
-                  Условия поставки и документы
+                  {t.nav.delivery}
                 </button>
               </li>
               <li>
@@ -93,7 +95,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
                   onClick={() => onNavigate('/kontakty')}
                   className="hover:text-white transition-colors"
                 >
-                  Контакты и реквизиты
+                  {t.nav.contacts}
                 </button>
               </li>
               <li className="pt-2">
@@ -102,7 +104,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
                   onClick={() => onOpenQuoteModal()}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-[#e6a417] hover:underline"
                 >
-                  Запросить коммерческое предложение →
+                  {t.nav.rfq} →
                 </button>
               </li>
             </ul>
@@ -111,7 +113,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
           {/* Col 4: Contacts & Address */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#e6a417] mb-3">
-              Связь с отделом ВЭД
+              {t.footer.contactsHeader}
             </h4>
 
             <div className="space-y-2 text-xs">
@@ -134,7 +136,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
               <div className="flex items-start gap-2 text-slate-300 pt-1">
                 <MapPin className="w-4 h-4 text-[#e6a417] shrink-0 mt-0.5" />
                 <span>
-                  Пункт передачи груза: станция Маньчжурия (КНР), граница РФ/КНР
+                  {t.nav.fcaBadge}
                 </span>
               </div>
             </div>
@@ -145,7 +147,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
                 onClick={() => onOpenQuoteModal()}
                 className="w-full bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors text-center"
               >
-                Отправить заявку / ТЗ
+                {t.nav.rfq}
               </button>
             </div>
           </div>
@@ -154,13 +156,14 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
           <div>
-            © 2026 Hubei Onearth Trading Company Limited. Все права защищены.
+            © 2026 {t.footer.legalEntity}. {t.footer.rights}
           </div>
           <div className="text-[11px] text-slate-400">
-            Поставка трансформаторного оборудования из Китая на условиях FCA Маньчжурия (Инкотермс 2020)
+            {t.footer.disclaimer}
           </div>
         </div>
       </div>
     </footer>
   );
 };
+
