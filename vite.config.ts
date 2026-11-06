@@ -8,6 +8,9 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 3000,
     open: false,
+    watch: {
+      ignored: ['**/start_data/**', '**/.git/**'],
+    },
   },
   build: {
     outDir: 'dist',
