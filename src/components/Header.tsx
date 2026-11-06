@@ -70,19 +70,19 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
         <button
           type="button"
           onClick={() => handleNav('/')}
-          className="text-left flex items-center gap-3 group cursor-pointer"
+          className="text-left flex items-center gap-3.5 group cursor-pointer"
         >
           <img
             src={logoUrl}
             alt="Hubei Onearth Trading Company Limited"
-            className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105"
+            className="h-9 sm:h-11 md:h-13 w-auto object-contain transition-transform group-hover:scale-102"
           />
-          <div className="hidden sm:flex flex-col">
-            <span className="text-base sm:text-lg font-black tracking-tight text-[#0b3d66] group-hover:text-navy-light transition-colors leading-tight">
-              Hubei Onearth Trading
+          <div className="hidden xl:flex flex-col border-l border-slate-200 pl-3">
+            <span className="text-[11px] font-bold text-[#0b3d66] uppercase tracking-wider leading-tight">
+              Трансформаторы из Китая
             </span>
-            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-              Трансформаторы из Китая · FCA Маньчжурия
+            <span className="text-[10px] text-slate-500 font-medium">
+              FCA Маньчжурия · Инкотермс 2020
             </span>
           </div>
         </button>
