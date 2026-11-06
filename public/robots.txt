@@ -1,0 +1,19 @@
+# robots.txt for Hubei Onearth Trading Company Limited
+# B2B Platform for Power Transformers Import from China (FCA Manzhouli)
+
+User-agent: Yandex
+Disallow: /*?*
+Disallow: /*utm_*
+Allow: /
+Allow: /katalog/
+Allow: /po-tz/
+Allow: /postavka/
+Allow: /kontakty/
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid
+Host: https://onearth-trading.ru
+
+User-agent: *
+Disallow: /*?*
+Disallow: /*utm_*
+Allow: /
+Sitemap: https://onearth-trading.ru/sitemap.xml
