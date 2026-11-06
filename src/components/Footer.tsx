@@ -7,6 +7,9 @@ interface Props {
   onOpenQuoteModal: (categorySlug?: string) => void;
 }
 
+const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
+const logoUrl = `${BASE}/images/logo.webp`;
+
 export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
   return (
     <footer className="bg-[#0b3d66] text-white border-t border-blue-900 mt-16 pt-12 pb-8">
@@ -14,6 +17,13 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-blue-800/60">
           {/* Col 1: Company Profile */}
           <div className="space-y-4">
+            <div className="bg-white p-2.5 rounded-xl inline-block shadow-sm">
+              <img
+                src={logoUrl}
+                alt="Hubei Onearth Trading Company Limited"
+                className="h-10 w-auto object-contain"
+              />
+            </div>
             <div>
               <span className="text-xl font-black tracking-tight text-white block">
                 Hubei Onearth Trading

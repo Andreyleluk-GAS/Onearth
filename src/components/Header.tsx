@@ -8,6 +8,9 @@ interface Props {
   onOpenQuoteModal: (categorySlug?: string) => void;
 }
 
+const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
+const logoUrl = `${BASE}/images/logo.webp`;
+
 export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteModal }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCatalogDropdownOpen, setIsCatalogDropdownOpen] = useState(false);
@@ -67,14 +70,21 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
         <button
           type="button"
           onClick={() => handleNav('/')}
-          className="text-left flex flex-col group cursor-pointer"
+          className="text-left flex items-center gap-3 group cursor-pointer"
         >
-          <span className="text-xl sm:text-2xl font-black tracking-tight text-[#0b3d66] group-hover:text-navy-light transition-colors">
-            Hubei Onearth Trading
-          </span>
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-            Трансформаторное оборудование из Китая
-          </span>
+          <img
+            src={logoUrl}
+            alt="Hubei Onearth Trading Company Limited"
+            className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105"
+          />
+          <div className="hidden sm:flex flex-col">
+            <span className="text-base sm:text-lg font-black tracking-tight text-[#0b3d66] group-hover:text-navy-light transition-colors leading-tight">
+              Hubei Onearth Trading
+            </span>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+              Трансформаторы из Китая · FCA Маньчжурия
+            </span>
+          </div>
         </button>
 
         {/* Desktop Navigation */}
