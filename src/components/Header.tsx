@@ -116,24 +116,28 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
 
                   {/* Mega-Dropdown Menu */}
                   {isCatalogDropdownOpen && (
-                    <div className="absolute top-full left-0 w-80 bg-white rounded-xl shadow-xl border border-surface-border p-3 pt-2 z-50 animate-fadeIn">
-                      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1.5 border-b border-slate-100 mb-1">
-                        Категории трансформаторов
+                    <div className="absolute top-full left-0 w-[430px] bg-white rounded-2xl shadow-2xl border border-surface-border p-3.5 pt-2.5 z-50 animate-fadeIn">
+                      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2.5 py-1.5 border-b border-slate-100 mb-1">
+                        Категории силового оборудования
                       </div>
-                      {TRANSFORMER_CATEGORIES.map((cat) => (
-                        <button
-                          key={cat.slug}
-                          type="button"
-                          onClick={() => handleNav(`/katalog/${cat.slug}`)}
-                          className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800 hover:text-[#0b3d66] transition-colors flex items-center justify-between"
-                        >
-                          <span className="truncate">{cat.shortTitle}</span>
-                          <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono">
-                            {cat.voltageClass} кВ
-                          </span>
-                        </button>
-                      ))}
-                      <div className="mt-2 pt-2 border-t border-slate-100">
+                      <div className="space-y-0.5">
+                        {TRANSFORMER_CATEGORIES.map((cat) => (
+                          <button
+                            key={cat.slug}
+                            type="button"
+                            onClick={() => handleNav(`/katalog/${cat.slug}`)}
+                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800 hover:text-[#0b3d66] transition-colors flex items-center justify-between group/item"
+                          >
+                            <span className="whitespace-nowrap text-slate-700 group-hover/item:text-[#0b3d66]">
+                              {cat.shortTitle}
+                            </span>
+                            <span className="text-[10px] bg-slate-100 text-slate-600 group-hover/item:bg-blue-50 group-hover/item:text-[#0b3d66] px-2 py-0.5 rounded font-mono font-bold shrink-0 whitespace-nowrap ml-3">
+                              {cat.voltageClass}&nbsp;кВ
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                      <div className="mt-2.5 pt-2 border-t border-slate-100">
                         <button
                           type="button"
                           onClick={() => handleNav('/katalog')}
