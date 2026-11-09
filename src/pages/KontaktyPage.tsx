@@ -23,7 +23,7 @@ export const KontaktyPage: React.FC<Props> = () => {
         `— 联系电话：${formPhone || '未提供'}`,
         `— 电子邮箱：${formEmail || '未提供'}`,
         `— 设备参数 / 需求备注：${formComment || '请安排工程部与我司对接具体技术协议'}`,
-        `— 交货基准：FCA 满洲里 (Incoterms 2020)`,
+        `— 交货基准：FCA (Free Carrier) (Incoterms 2020)`,
       ].join('\n');
     }
 
@@ -34,7 +34,7 @@ export const KontaktyPage: React.FC<Props> = () => {
         `— Phone Number: ${formPhone || 'Not specified'}`,
         `— Email: ${formEmail || 'Not specified'}`,
         `— Transformer Specifications / Comments: ${formComment || 'Please contact us to review technical requirements'}`,
-        `— Delivery Basis: FCA Manzhouli (Incoterms 2020)`,
+        `— Delivery Basis: FCA (Free Carrier) (Incoterms 2020)`,
       ].join('\n');
     }
 
@@ -44,7 +44,7 @@ export const KontaktyPage: React.FC<Props> = () => {
       `— Телефон: ${formPhone || 'Не указано'}`,
       `— Email: ${formEmail || 'Не указано'}`,
       `— Параметры трансформатора: ${formComment || 'Прошу связаться для уточнения ТЗ'}`,
-      `— Базис поставки: FCA Маньчжурия (Инкотермс 2020)`,
+      `— Базис поставки: FCA (Free Carrier), (Инкотермс 2020)`,
     ].join('\n');
   };
 

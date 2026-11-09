@@ -9,7 +9,7 @@ export default defineConfig({
     port: 3000,
     open: false,
     watch: {
-      ignored: ['**/start_data/**', '**/.git/**'],
+      ignored: ['**/start_data/**', '**/Feedback/**', '**/.git/**'],
     },
   },
   build: {

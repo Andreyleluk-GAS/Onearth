@@ -55,10 +55,10 @@ export const RequestQuoteModal: React.FC<Props> = ({
       return [
         `尊敬的湖北万域贸易有限公司（Hubei Onearth Trading Company Limited）：`,
         ``,
-        `您好！我方现申请提供以下电力变压器设备的技术规格书与商业报价（FCA 满洲里交货）：`,
+        `您好！我方现申请提供以下电力变压器设备的技术规格书与商业报价（FCA (Free Carrier) 交货）：`,
         `— 变压器型号分类：${categoryTitle}`,
         `— 额定容量：${power} kVA`,
-        `— 交货基准：FCA 满洲里（Incoterms 2020）`,
+        `— 交货基准：FCA (Free Carrier)（Incoterms 2020）`,
         ``,
         `询价方联系信息：`,
         `— 单位名称：${company || '未填写'}`,
@@ -78,7 +78,7 @@ export const RequestQuoteModal: React.FC<Props> = ({
         `Please prepare an official commercial quotation and technical datasheet for the following power transformer equipment:`,
         `— Equipment Type: ${categoryTitle}`,
         `— Rated Capacity: ${power} kVA`,
-        `— Delivery Basis: FCA Manzhouli (Incoterms 2020)`,
+        `— Delivery Basis: FCA (Free Carrier) (Incoterms 2020)`,
         ``,
         `Buyer Contact Information:`,
         `— Company Name: ${company || 'Not specified'}`,
@@ -97,7 +97,7 @@ export const RequestQuoteModal: React.FC<Props> = ({
       `Прошу подготовить коммерческое предложение и техническую спецификацию на трансформаторное оборудование:`,
       `— Тип оборудования: ${categoryTitle}`,
       `— Номинальная мощность: ${power} кВА`,
-      `— Базис поставки: FCA Маньчжурия (Инкотермс 2020)`,
+      `— Базис поставки: FCA (Free Carrier), (Инкотермс 2020)`,
       ``,
       `Контактные данные заказчика:`,
       `— Организация: ${company || 'Не указано'}`,
@@ -190,7 +190,7 @@ export const RequestQuoteModal: React.FC<Props> = ({
                     onChange={(e) => setPower(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
                   >
-                    {['630', '800', '1000', '1250', '1600', '2000', '2500'].map((p) => (
+                    {['630', '800', '1000', '1250', '1600', '2000', '2500', '3150', '4000', '5000', '6300'].map((p) => (
                       <option key={p} value={p}>
                         {p} kVA
                       </option>

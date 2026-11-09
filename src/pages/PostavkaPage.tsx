@@ -30,8 +30,8 @@ export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
         },
         {
           num: '04',
-          title: '满洲里口岸出口报关',
-          desc: '设备安全运抵满洲里货运口岸，卖方负责完成全套中国海关出口清关放行手续。',
+          title: '中国境内运输与出口报关',
+          desc: '设备运抵中国境内约定交接地，卖方全权负责组织运输并办理完毕全部海关出口报关与清关手续。',
         },
         {
           num: '05',
@@ -60,8 +60,8 @@ export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
         },
         {
           num: '04',
-          title: 'PRC Export Customs Clearance',
-          desc: 'Transport of equipment to Manzhouli border station, full export customs clearance handled by seller.',
+          title: 'Domestic Transport & Export Clearance',
+          desc: 'Delivery of equipment to the agreed location in the PRC, including export customs clearance, is conducted by and at the expense of the Seller.',
         },
         {
           num: '05',
@@ -89,8 +89,8 @@ export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
       },
       {
         num: '04',
-        title: 'Экспортная очистка в КНР',
-        desc: 'Доставка оборудования до Маньчжурии, таможенное оформление экспорта силами продавца.',
+        title: 'Доставка в КНР и экспортная очистка',
+        desc: 'Доставка оборудования до согласованного места в КНР, включая таможенное оформление экспорта, осуществляется силами и за счёт Продавца.',
       },
       {
         num: '05',
@@ -109,7 +109,7 @@ export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
           '装箱单 (Packing List，含毛重与净重)',
           '中国海关正本出口报关单据',
           '变压器工厂出厂试验报告 (Test Report)',
-          '产品合格证、说明书及原产地证（按需）',
+          '产品使用说明书与原产地证明（按需）',
         ]
       : language === 'en'
       ? [
@@ -117,14 +117,14 @@ export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
           'Detailed Packing List with gross/net dimensions',
           'PRC Export Customs Declaration',
           'Certified Factory Test Report',
-          'Manufacturer Quality Passport & Operations Manual',
+          'Operations, installation and maintenance manual',
         ]
       : [
           'Коммерческий инвойс (Commercial Invoice)',
           'Упаковочный лист (Packing List) с весами',
           'Экспортные таможенные документы КНР',
           'Протокол заводских испытаний изделий',
-          'Паспорт и руководство по эксплуатации',
+          'Руководство по эксплуатации',
         ];
 
   return (
@@ -249,10 +249,10 @@ export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
             </strong>
             <p className="leading-relaxed">
               {language === 'zh'
-                ? '签约前双方将明确落实：国际运输承运人、满洲里口岸交割场站、出口实木熏蒸木箱包装（符合 ISPM 15 国际植物检疫标准）、防水防潮真空铝箔包装及技术清关单据。'
+                ? '在签署商务合同之前，双方须明确并确认运输路线、交货期、集装箱木箱出口包装及运输唛头要求，以及清关所需的全部随附单据清单。'
                 : language === 'en'
-                ? 'Before signing the purchase contract, please confirm the carrier, target terminal in Manzhouli, export packaging requirements (ISPM 15 heat-treated timber crates, moisture-proof barrier foil), and the complete customs document set.'
-                : 'До заключения контракта согласуйте маршрут перевозки, аккредитованного перевозчика, желаемые сроки, специальные требования к экспортной упаковке (деревянные клети по стандартам ISPM 15), транспортной маркировке и полному комплекту документов для таможенного оформления.'}
+                ? 'Prior to contract signing, the transportation route, delivery timeline, specific export packing and shipping mark requirements, as well as the full package of customs documentation, must be agreed upon.'
+                : 'До заключения контракта необходимо согласовать маршрут перевозки, сроки поставки, специальные требования к экспортной упаковке и транспортной маркировке, а также полный комплект документов, необходимых для таможенного оформления.'}
             </p>
           </div>
         </div>
@@ -264,10 +264,10 @@ export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
           <div>
             <h3 className="text-xl font-bold">
               {language === 'zh'
-                ? '对 FCA 满洲里交货流程有任何疑问？'
+                ? '对商务合作与供货条款仍有疑问？'
                 : language === 'en'
-                ? 'Questions regarding FCA Manzhouli delivery procedures?'
-                : 'Остались вопросы по условиям FCA Маньчжурия?'}
+                ? 'Have questions regarding terms of cooperation?'
+                : 'Остались вопросы по условиям сотрудничества?'}
             </h3>
             <p className="text-xs text-slate-300 mt-1">
               {language === 'zh'

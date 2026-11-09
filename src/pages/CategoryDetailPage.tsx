@@ -20,6 +20,8 @@ export const CategoryDetailPage: React.FC<Props> = ({
 
   const related = categories.filter((c) => c.slug !== category.slug).slice(0, 3);
 
+  const availablePowers = Array.from(new Set(category.specs.map((s) => s.power_kva))).sort((a, b) => a - b);
+
   const displayedSpecs = selectedPowerFilter === 'all'
     ? category.specs
     : category.specs.filter((s) => s.power_kva === selectedPowerFilter);
@@ -166,7 +168,7 @@ export const CategoryDetailPage: React.FC<Props> = ({
               >
                 {t.categoryDetail.allPowers}
               </button>
-              {[630, 800, 1000, 1250, 1600, 2000, 2500].map((p) => (
+              {availablePowers.map((p) => (
                 <button
                   key={p}
                   type="button"
@@ -345,10 +347,10 @@ export const CategoryDetailPage: React.FC<Props> = ({
             </h4>
             <p className="text-xs text-slate-700 max-w-2xl leading-relaxed">
               {language === 'zh'
-                ? '请将采购单、技术规格书或工程图纸发送至 mail@mail.ru — 我们将为您提供完备的工厂技术方案与 FCA 满洲里交付报价。'
+                ? '请将采购单、技术规格书或工程图纸发送至 mail@mail.ru — 我们将为您提供完备的工厂技术方案与 FCA (Free Carrier) 交付报价。'
                 : language === 'en'
-                ? 'Send your questionnaire, technical assignment, or project parameters to mail@mail.ru — we will prepare a full commercial offer with technical documentation and FCA Manzhouli delivery calculation.'
-                : 'Отправьте опросный лист, техническое задание или параметры проекта на mail@mail.ru — подготовим коммерческое предложение с технической документацией и расчётом доставки FCA Маньчжурия.'}
+                ? 'Send your questionnaire, technical assignment, or project parameters to mail@mail.ru — we will prepare a full commercial offer with technical documentation and FCA (Free Carrier) delivery calculation.'
+                : 'Отправьте опросный лист, техническое задание или параметры проекта на mail@mail.ru — подготовим коммерческое предложение с технической документацией и расчётом поставки на условиях FCA (Free Carrier).'}
             </p>
           </div>
 

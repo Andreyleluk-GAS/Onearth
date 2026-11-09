@@ -60,7 +60,7 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
         `— 冷却方式：${cooling}`,
         `— 外壳防护等级：${enclosure}`,
         `— 绕组导线材质：${getWindingsName(windings)}`,
-        `— 交货基准：FCA 满洲里 (Incoterms 2020)`,
+        `— 交货基准：FCA (Free Carrier) (Incoterms 2020)`,
         ``,
         `请出具正式技术商务方案与生产交期。`,
       ].join('\n');
@@ -75,7 +75,7 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
         `— Cooling System: ${cooling}`,
         `— Enclosure Rating: ${enclosure}`,
         `— Winding Conductor: ${getWindingsName(windings)}`,
-        `— Delivery Basis: FCA Manzhouli (Incoterms 2020)`,
+        `— Delivery Basis: FCA (Free Carrier) (Incoterms 2020)`,
         ``,
         `Please provide official commercial quotation, technical parameters, and factory lead time.`,
       ].join('\n');
@@ -89,7 +89,7 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
       `— Охлаждение: ${cooling}`,
       `— Степень защиты кожуха: ${enclosure}`,
       `— Материал обмоток: ${getWindingsName(windings)}`,
-      `— Базис поставки: FCA Маньчжурия (Инкотермс 2020)`,
+      `— Базис поставки: FCA (Free Carrier), (Инкотермс 2020)`,
       ``,
       `Прошу рассчитать стоимость и срок производства на заводе в КНР.`,
     ].join('\n');
@@ -221,7 +221,7 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
                 onChange={(e) => setPower(e.target.value)}
                 className="w-full bg-white border border-slate-300 rounded-lg p-2 font-medium"
               >
-                {['630 kVA', '800 kVA', '1000 kVA', '1250 kVA', '1600 kVA', '2000 kVA', '2500 kVA'].map((p) => (
+                {['630 kVA', '800 kVA', '1000 kVA', '1250 kVA', '1600 kVA', '2000 kVA', '2500 kVA', '3150 kVA', '4000 kVA', '5000 kVA', '6300 kVA'].map((p) => (
                   <option key={p} value={p}>{p}</option>
                 ))}
               </select>

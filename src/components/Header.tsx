@@ -87,7 +87,7 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
               {t.nav.tagline}
             </span>
             <span className="text-[10px] text-slate-500 font-medium">
-              FCA Manzhouli · Incoterms 2020
+              FCA (Free Carrier) · Incoterms 2020
             </span>
           </div>
         </button>
