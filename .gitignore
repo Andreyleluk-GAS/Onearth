@@ -36,5 +36,8 @@ pnpm-debug.log*
 ues_highres/
 ues_images/
 ues_*.html
-Feedback/
+Feedback/**/*.docx
+Feedback/**/*.zip
+Feedback/*.zip
+Feedback/*.txt
 start_data/
