@@ -8,6 +8,7 @@ import { CategoryDetailPage } from './pages/CategoryDetailPage';
 import { PoTzPage } from './pages/PoTzPage';
 import { PostavkaPage } from './pages/PostavkaPage';
 import { KontaktyPage } from './pages/KontaktyPage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { useLanguage } from './i18n/LanguageContext';
 import { Grid, FileText, Truck, Phone, Zap } from 'lucide-react';
 
@@ -108,6 +109,16 @@ export const App: React.FC = () => {
     // 6. Contacts
     if (cleanPath === '/kontakty' || cleanPath === '/kontakty.html') {
       return <KontaktyPage onOpenQuoteModal={() => openQuoteModal()} />;
+    }
+
+    // 7. Privacy Policy
+    if (
+      cleanPath === '/politika-konfidencialnosti' ||
+      cleanPath === '/politika-konfidencialnosti.html' ||
+      cleanPath === '/privacy' ||
+      cleanPath === '/privacy-policy'
+    ) {
+      return <PrivacyPolicyPage onNavigate={navigate} />;
     }
 
     // Fallback: Catalog Page

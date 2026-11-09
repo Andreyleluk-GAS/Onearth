@@ -16,7 +16,12 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
   const [cooling, setCooling] = useState('AN');
   const [enclosure, setEnclosure] = useState('IP31');
   const [windings, setWindings] = useState('copper');
+  const [consentGiven, setConsentGiven] = useState(false);
+  const [consentError, setConsentError] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
+  const privacyUrl = `${BASE}/politika-konfidencialnosti`;
 
   const getTypeName = (val: string) => {
     if (language === 'zh') {
@@ -103,7 +108,19 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
       : 'Запрос на изготовление трансформатора по ТЗ'
   )}&body=${encodeURIComponent(getTzSummary())}`;
 
+  const handleSendEmail = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!consentGiven) {
+      e.preventDefault();
+      setConsentError(true);
+      return;
+    }
+  };
+
   const handleCopy = async () => {
+    if (!consentGiven) {
+      setConsentError(true);
+      return;
+    }
     try {
       await navigator.clipboard.writeText(getTzSummary());
       setCopied(true);
@@ -282,11 +299,49 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
             </div>
           </div>
 
+          {/* Mandatory Consent Checkbox (152-FZ) */}
+          <div
+            className={`mt-6 p-3 rounded-xl border transition-colors ${
+              consentError ? 'bg-red-50 border-red-300' : 'bg-white border-slate-200'
+            }`}
+          >
+            <label className="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={consentGiven}
+                onChange={(e) => {
+                  setConsentGiven(e.target.checked);
+                  if (e.target.checked) setConsentError(false);
+                }}
+                className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#0b3d66] focus:ring-[#0b3d66] cursor-pointer shrink-0"
+              />
+              <span className="leading-snug">
+                {t.consent.checkboxText}{' '}
+                <a
+                  href={privacyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-[#0b3d66] font-bold underline hover:text-[#e6a417] transition-colors"
+                >
+                  {t.consent.privacyLink}
+                </a>
+                {t.consent.suffix ? ` ${t.consent.suffix}` : ''}.
+              </span>
+            </label>
+            {consentError && (
+              <p className="text-[11px] text-red-600 font-semibold mt-1.5 flex items-center gap-1">
+                <span>⚠</span> {t.consent.error}
+              </p>
+            )}
+          </div>
+
           {/* Builder CTAs */}
-          <div className="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <div className="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
             <div className="flex gap-2">
               <a
                 href={mailtoLink}
+                onClick={handleSendEmail}
                 className="inline-flex items-center gap-2 bg-[#0b3d66] hover:bg-navy-dark text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-md cursor-pointer"
               >
                 <Send className="w-4 h-4 text-[#e6a417]" />

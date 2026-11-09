@@ -23,6 +23,7 @@ Allow: /katalog/
 Allow: /po-tz/
 Allow: /postavka/
 Allow: /kontakty/
+Allow: /politika-konfidencialnosti/
 Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid
 Host: https://onearth-trading.ru
 
@@ -50,6 +51,7 @@ const CANONICAL_URLS = [
   { loc: 'https://onearth-trading.ru/po-tz/', priority: '0.9', changefreq: 'monthly' },
   { loc: 'https://onearth-trading.ru/postavka/', priority: '0.9', changefreq: 'monthly' },
   { loc: 'https://onearth-trading.ru/kontakty/', priority: '0.8', changefreq: 'monthly' },
+  { loc: 'https://onearth-trading.ru/politika-konfidencialnosti/', priority: '0.5', changefreq: 'yearly' },
 ];
 
 // Generate sitemap.xml

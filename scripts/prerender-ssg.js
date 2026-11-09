@@ -155,6 +155,19 @@ const PAGES_TO_PRERENDER = [
         <p>Телефон: +7 (343) 123-45-67, E-mail: mail@mail.ru</p>
       </div>
     `
+  },
+  {
+    route: '/politika-konfidencialnosti/',
+    title: 'Политика конфиденциальности — Hubei Onearth Trading Company Limited',
+    description: 'Политика конфиденциальности и обработки персональных данных в соответствии с 152-ФЗ. Hubei Onearth Trading Company Limited.',
+    h1: 'Политика конфиденциальности',
+    content: `
+      <div class="max-w-7xl mx-auto px-4 py-8">
+        <h1>Политика конфиденциальности</h1>
+        <p>Настоящая Политика конфиденциальности определяет порядок сбора, обработки и защиты персональных данных пользователей в соответствии с Федеральным законом РФ № 152-ФЗ «О персональных данных».</p>
+        <p>Оператор персональных данных: Hubei Onearth Trading Company Limited. E-mail: mail@mail.ru</p>
+      </div>
+    `
   }
 ];
 

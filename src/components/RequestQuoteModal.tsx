@@ -23,8 +23,13 @@ export const RequestQuoteModal: React.FC<Props> = ({
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
+  const [consentGiven, setConsentGiven] = useState(false);
+  const [consentError, setConsentError] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
+  const privacyUrl = `${BASE}/politika-konfidencialnosti`;
 
   useEffect(() => {
     if (initialCategorySlug) setCategorySlug(initialCategorySlug);
@@ -32,6 +37,8 @@ export const RequestQuoteModal: React.FC<Props> = ({
     if (isOpen) {
       setIsSubmitted(false);
       setIsCopied(false);
+      setConsentGiven(false);
+      setConsentError(false);
     }
   }, [initialCategorySlug, initialPower, isOpen]);
 
@@ -112,7 +119,19 @@ export const RequestQuoteModal: React.FC<Props> = ({
 
   const mailtoLink = `mailto:mail@mail.ru?subject=${generateEmailSubject()}&body=${encodeURIComponent(generateEmailBodyText())}`;
 
+  const handleSendEmail = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!consentGiven) {
+      e.preventDefault();
+      setConsentError(true);
+      return;
+    }
+  };
+
   const handleCopyText = async () => {
+    if (!consentGiven) {
+      setConsentError(true);
+      return;
+    }
     try {
       await navigator.clipboard.writeText(generateEmailBodyText());
       setIsCopied(true);
@@ -124,6 +143,10 @@ export const RequestQuoteModal: React.FC<Props> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!consentGiven) {
+      setConsentError(true);
+      return;
+    }
     setIsSubmitted(true);
   };
 
@@ -276,10 +299,48 @@ export const RequestQuoteModal: React.FC<Props> = ({
                 />
               </div>
 
+              {/* Mandatory Consent Checkbox (152-FZ) */}
+              <div
+                className={`p-3 rounded-xl border transition-colors ${
+                  consentError ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'
+                }`}
+              >
+                <label className="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={consentGiven}
+                    onChange={(e) => {
+                      setConsentGiven(e.target.checked);
+                      if (e.target.checked) setConsentError(false);
+                    }}
+                    className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#0b3d66] focus:ring-[#0b3d66] cursor-pointer shrink-0"
+                  />
+                  <span className="leading-snug">
+                    {t.consent.checkboxText}{' '}
+                    <a
+                      href={privacyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-[#0b3d66] font-bold underline hover:text-[#e6a417] transition-colors"
+                    >
+                      {t.consent.privacyLink}
+                    </a>
+                    {t.consent.suffix ? ` ${t.consent.suffix}` : ''}.
+                  </span>
+                </label>
+                {consentError && (
+                  <p className="text-[11px] text-red-600 font-semibold mt-1.5 flex items-center gap-1">
+                    <span>⚠</span> {t.consent.error}
+                  </p>
+                )}
+              </div>
+
               {/* Actions */}
               <div className="pt-2 flex flex-col sm:flex-row gap-2">
                 <a
                   href={mailtoLink}
+                  onClick={handleSendEmail}
                   className="flex-1 inline-flex items-center justify-center gap-2 bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 text-center"
                 >
                   <Mail className="w-4 h-4" />

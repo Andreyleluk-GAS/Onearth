@@ -98,6 +98,15 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
                   {t.nav.contacts}
                 </button>
               </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('/politika-konfidencialnosti')}
+                  className="hover:text-white transition-colors text-slate-300 hover:text-slate-100"
+                >
+                  {t.footer.privacyPolicy}
+                </button>
+              </li>
               <li className="pt-2">
                 <button
                   type="button"
@@ -154,12 +163,20 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
           <div>
             © 2026 {t.footer.legalEntity}. {t.footer.rights}
           </div>
-          <div className="text-[11px] text-slate-400">
-            {t.footer.disclaimer}
+          <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
+            <button
+              type="button"
+              onClick={() => onNavigate('/politika-konfidencialnosti')}
+              className="text-slate-300 hover:text-white underline transition-colors cursor-pointer"
+            >
+              {t.footer.privacyPolicy}
+            </button>
+            <span className="hidden sm:inline text-slate-600">•</span>
+            <span>{t.footer.disclaimer}</span>
           </div>
         </div>
       </div>
