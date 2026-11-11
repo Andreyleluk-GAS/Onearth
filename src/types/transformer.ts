@@ -13,12 +13,18 @@ export interface TransformerSpec {
 
 export type InsulationType = 'cast_resin' | 'air_barrier' | 'oil';
 export type LossClass = 'standard' | 'low_loss';
+export type MainCategory = 'dry' | 'oil' | 'special';
+export type SubCategory = 'cast_resin' | 'air_barrier' | 'oil_pbv' | 'oil_rpn' | 'special';
 
 export interface TransformerCategory {
   id: string;
   slug: string;
   title: string;
   shortTitle: string;
+  compactTitle: string;
+  seriesCode: string;
+  mainCategory: MainCategory;
+  subCategory: SubCategory;
   voltageClass: '10' | '20' | '35';
   insulationType: InsulationType;
   lossClass: LossClass;
@@ -28,7 +34,8 @@ export interface TransformerCategory {
   regulationType: string;
   description: string;
   applicationArea?: string;
-  tableType: 'dry_f_h' | 'dry_h' | 'oil';
+  tableType: 'dry_f_h' | 'dry_h' | 'oil' | 'special';
+  ecoBadge?: boolean;
   specs: TransformerSpec[];
   standardEquipment: string[];
   options: string[];

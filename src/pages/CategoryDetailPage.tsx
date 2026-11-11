@@ -207,7 +207,7 @@ export const CategoryDetailPage: React.FC<Props> = ({
                     <th className="py-3 px-3 font-bold">{t.categoryDetail.thPkzH}</th>
                   )}
 
-                  {category.tableType === 'oil' && (
+                  {(category.tableType === 'oil' || category.tableType === 'special') && (
                     <th className="py-3 px-3 font-bold">{t.categoryDetail.thPkz}</th>
                   )}
 
@@ -257,9 +257,9 @@ export const CategoryDetailPage: React.FC<Props> = ({
                       </td>
                     )}
 
-                    {category.tableType === 'oil' && (
+                    {(category.tableType === 'oil' || category.tableType === 'special') && (
                       <td className="py-3 px-3 font-mono font-semibold text-slate-700">
-                        {spec.pkz_w?.toLocaleString()}
+                        {(spec.pkz_w || spec.pkz_f_w)?.toLocaleString()}
                       </td>
                     )}
 

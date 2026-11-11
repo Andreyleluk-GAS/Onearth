@@ -48,6 +48,8 @@ const CANONICAL_URLS = [
   { loc: 'https://onearth-trading.ru/katalog/suhie-litaya-35kv-pp/', priority: '0.9', changefreq: 'weekly' },
   { loc: 'https://onearth-trading.ru/katalog/suhie-vozdushno-baryernaya-10kv/', priority: '0.9', changefreq: 'weekly' },
   { loc: 'https://onearth-trading.ru/katalog/maslyanye-35kv/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://onearth-trading.ru/katalog/maslyanye-35kv-pbv/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://onearth-trading.ru/katalog/special-transformatory/', priority: '0.9', changefreq: 'weekly' },
   { loc: 'https://onearth-trading.ru/po-tz/', priority: '0.9', changefreq: 'monthly' },
   { loc: 'https://onearth-trading.ru/postavka/', priority: '0.9', changefreq: 'monthly' },
   { loc: 'https://onearth-trading.ru/kontakty/', priority: '0.8', changefreq: 'monthly' },

@@ -4,30 +4,75 @@ const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
 
 const getImg = (name: string) => `${BASE}/images/products/${name}`;
 
-const STANDARD_EQUIPMENT: string[] = [
-  'Трёхфазный трансформатор, степень защиты IP00.',
-  'Температурный контроль и индикация: терморегулятор и PTC-датчики в наиболее горячей точке — на верхнем торце обмотки НН. При перегреве из-за перегрузки или неисправности подаётся сигнал тревоги, при превышении безопасного значения устройство отключается.',
-  'Естественная система охлаждения (AN).',
-  'Катки для продольного и поперечного перемещения.',
-  'Протокол испытаний заводского контроля.',
-  'Руководство по эксплуатации (на русском языке опционально).',
+// Exact standard equipment text from Task-1
+const STANDARD_DRY_EQUIPMENT: string[] = [
+  'Трехфазный трансформатор степень защиты IP00.',
+  'Температурный контроль и индикация (Система контроля состоит из терморегулятора и PTC-датчиков, установленных в самой горячей точке (на верхнем торце обмотки НН). При перегреве из-за перегрузки или неисправности терморегулятор подает сигнал тревоги, а при превышении безопасного значения — отключает устройство).',
+  'Система охлаждения естественная (AN).',
+  'Катки, обеспечивающие продольное и поперечное перемещение.',
+  'Протокол испытаний.',
+  'Руководство по эксплуатации.',
 ];
 
-const AVAILABLE_OPTIONS: string[] = [
-  'Защитный кожух со степенью защиты IP20, IP21, IP31 или иной по ТЗ.',
-  'Микропроцессорный контроллер температуры с интерфейсом RS232 / RS485 (Modbus RTU).',
-  'Система принудительного охлаждения обмоток (AF) с вентиляторами (повышение номинальной мощности до +25–40%).',
-  'Антивибрационные демпферные виброопоры.',
-  'Трансформаторы тока для релейной защиты и коммерческого учёта.',
-  'Перевод документации и шильдов на русский язык.',
+// Exact available options text from Task-1
+const AVAILABLE_DRY_OPTIONS: string[] = [
+  'Кожух, обеспечивающий степень защиты: IP20, IP21, IP31 или иное.',
+  'Контроллер температуры с Интерфейс RS232/RS485 или иное.',
+  'Система принудительном охлаждении (AF).',
+  'Виброопоры.',
+];
+
+const STANDARD_OIL_EQUIPMENT: string[] = [
+  'Трехфазный масляный трансформатор герметичного исполнения (IP54 / наружная установка).',
+  'Система регулирования напряжения (ПБВ или РПН в зависимости от исполнения).',
+  'Маслоуказатель уровня масла поплавкового или стрелочного типа.',
+  'Предохранительный клапан сброса давления / газовое реле Бухгольца.',
+  'Термосигнализатор / гильза термометра для контроля температуры верхних слоев масла.',
+  'Кран для слива и отбора проб трансформаторного масла.',
+  'Катки, обеспечивающие продольное и поперечное перемещение.',
+  'Протокол испытаний.',
+  'Руководство по эксплуатации.',
+];
+
+const AVAILABLE_OIL_OPTIONS: string[] = [
+  'Газовое реле Бухгольца с аварийным и предупредительным сигналами.',
+  'Манометрический термометр с сигнализацией.',
+  'Встроенные трансформаторы тока для релейной защиты.',
+  'Защитные кожухи для кабельных вводов ВН и НН.',
+  'Трансформаторное масло марки ГК (пониженная температура застывания до -45°C).',
+];
+
+const STANDARD_SPECIAL_EQUIPMENT: string[] = [
+  'Трехфазный специальный силовой трансформатор (литая или масляная изоляция).',
+  'Усиленная электродинамическая стойкость обмоток к высшим гармоникам выпрямителей.',
+  'Многоточечная система температурного контроля обмоток и сердечника.',
+  'Катки, обеспечивающие продольное и поперечное перемещение.',
+  'Расширенный заводской протокол испытаний.',
+  'Руководство по эксплуатации и паспорт оборудования.',
+];
+
+const AVAILABLE_SPECIAL_OPTIONS: string[] = [
+  'Производство под собственной торговой маркой заказчика (OEM / Private Label).',
+  'Расщепленные вторичные обмотки для 6-, 12- и 24-пульсных выпрямителей.',
+  'Защитный кожух со степенью защиты IP20, IP21, IP31 или IP54.',
+  'Микропроцессорный блок мониторинга с интерфейсом RS-485 / Modbus.',
+  'Виброопоры демпферные.',
 ];
 
 export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
+  // ==========================================
+  // КАТЕГОРИЯ 1: СУХИЕ ТРАНСФОРМАТОРЫ
+  // Подкатегория 1.1: С литой изоляцией
+  // ==========================================
   {
     id: 'suhie-litaya-10kv',
     slug: 'suhie-litaya-10kv',
-    title: 'Сухие трансформаторы с литой изоляцией на 10 кВ',
+    title: 'Сухие трансформаторы с литой изоляцией на класс напряжения 10 кВ с ПБВ ±2х2,5%',
     shortTitle: 'Сухие с литой изоляцией 10 кВ',
+    compactTitle: 'Трансформатор 10 кВ, ПБВ, стандартные потери',
+    seriesCode: 'ТСЛ-10',
+    mainCategory: 'dry',
+    subCategory: 'cast_resin',
     voltageClass: '10',
     insulationType: 'cast_resin',
     lossClass: 'standard',
@@ -38,8 +83,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     description: 'Трёхфазные сухие трансформаторы с литой изоляцией на класс напряжения 10 кВ с переключением ответвлений без возбуждения ПБВ ±2х2,5%. Доступны варианты напряжения короткого замыкания Uк = 6% и 8%.',
     tableType: 'dry_f_h',
     image: getImg('suhie-litaya-10kv.webp'),
-    standardEquipment: STANDARD_EQUIPMENT,
-    options: AVAILABLE_OPTIONS,
+    standardEquipment: STANDARD_DRY_EQUIPMENT,
+    options: AVAILABLE_DRY_OPTIONS,
     specs: [
       { power_kva: 630, voltage_hv_str: '6; 6,3; 6,6; 10; 10,5; 11', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1170, pkz_f_w: 5960, pkz_h_w: 6400, i0_pct: 0.85, uk_pct: 6 },
       { power_kva: 800, voltage_hv_str: '6; 6,3; 6,6; 10; 10,5; 11', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1360, pkz_f_w: 6960, pkz_h_w: 7460, i0_pct: 0.85, uk_pct: 6 },
@@ -56,11 +101,16 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
   {
     id: 'suhie-litaya-10kv-pp',
     slug: 'suhie-litaya-10kv-pp',
-    title: 'Сухие трансформаторы 10 кВ с пониженными потерями',
+    title: 'Сухие трансформаторы с литой изоляцией на класс напряжения 10 кВ с ПБВ ±2х2,5% с пониженными потерями',
     shortTitle: 'Сухие с пониженными потерями 10 кВ',
+    compactTitle: 'Трансформатор 10 кВ, ПБВ, пониженные потери',
+    seriesCode: 'ТСЛ-10 ЭКО',
+    mainCategory: 'dry',
+    subCategory: 'cast_resin',
     voltageClass: '10',
     insulationType: 'cast_resin',
     lossClass: 'low_loss',
+    ecoBadge: true,
     voltageHV: '6; 6,3; 6,6; 10; 10,5; 11 кВ',
     voltageLV: '0,4 кВ',
     connectionGroup: 'Д/Ун-11 или У/Ун-0',
@@ -68,8 +118,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     description: 'Энергоэффективные трёхфазные сухие трансформаторы с литой изоляцией на класс напряжения 10 кВ со сверхнизкими потерями холостого хода (до 36% экономии энергии по сравнению со стандартными моделями).',
     tableType: 'dry_f_h',
     image: getImg('suhie-litaya-10kv-pp.webp'),
-    standardEquipment: STANDARD_EQUIPMENT,
-    options: AVAILABLE_OPTIONS,
+    standardEquipment: STANDARD_DRY_EQUIPMENT,
+    options: AVAILABLE_DRY_OPTIONS,
     specs: [
       { power_kva: 630, voltage_hv_str: '6; 6,3; 6,6; 10; 10,5; 11', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 750, pkz_f_w: 5365, pkz_h_w: 5760, i0_pct: 0.85, uk_pct: 6 },
       { power_kva: 800, voltage_hv_str: '6; 6,3; 6,6; 10; 10,5; 11', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 875, pkz_f_w: 6265, pkz_h_w: 6715, i0_pct: 0.85, uk_pct: 6 },
@@ -83,8 +133,12 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
   {
     id: 'suhie-litaya-20kv',
     slug: 'suhie-litaya-20kv',
-    title: 'Сухие трансформаторы с литой изоляцией на 20 кВ',
+    title: 'Сухие трансформаторы с литой изоляцией на класс напряжения 20 кВ с ПБВ ±2х2,5%',
     shortTitle: 'Сухие с литой изоляцией 20 кВ',
+    compactTitle: 'Трансформатор 20 кВ, ПБВ, стандартные потери',
+    seriesCode: 'ТСЛ-20',
+    mainCategory: 'dry',
+    subCategory: 'cast_resin',
     voltageClass: '20',
     insulationType: 'cast_resin',
     lossClass: 'standard',
@@ -95,8 +149,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     description: 'Трёхфазные сухие трансформаторы с литой эпоксидной изоляцией на класс напряжения 20 кВ. Оптимальны для глубоких вводов распределительных сетей 20 кВ мегаполисов и крупных промышленных центров.',
     tableType: 'dry_f_h',
     image: getImg('suhie-litaya-20kv.webp'),
-    standardEquipment: STANDARD_EQUIPMENT,
-    options: AVAILABLE_OPTIONS,
+    standardEquipment: STANDARD_DRY_EQUIPMENT,
+    options: AVAILABLE_DRY_OPTIONS,
     specs: [
       { power_kva: 630, voltage_hv_str: '20; 22; 24', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1530, pkz_f_w: 6840, pkz_h_w: 7320, i0_pct: 0.85, uk_pct: 6 },
       { power_kva: 800, voltage_hv_str: '20; 22; 24', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1750, pkz_f_w: 8260, pkz_h_w: 8840, i0_pct: 0.85, uk_pct: 6 },
@@ -112,8 +166,12 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
   {
     id: 'suhie-litaya-35kv',
     slug: 'suhie-litaya-35kv',
-    title: 'Сухие трансформаторы с литой изоляцией на 35 кВ',
+    title: 'Сухие трансформаторы с литой изоляцией на класс напряжения 35 кВ с ПБВ ±2х2,5%',
     shortTitle: 'Сухие с литой изоляцией 35 кВ',
+    compactTitle: 'Трансформатор 35 кВ, ПБВ, стандартные потери',
+    seriesCode: 'ТСЛ-35',
+    mainCategory: 'dry',
+    subCategory: 'cast_resin',
     voltageClass: '35',
     insulationType: 'cast_resin',
     lossClass: 'standard',
@@ -124,8 +182,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     description: 'Высоковольтные сухие трансформаторы с литой изоляцией 35 кВ для понизительных подстанций, ветро- и солнечной генерации, объектов со строгими требованиями пожаро- и взрывобезопасности.',
     tableType: 'dry_f_h',
     image: getImg('suhie-litaya-35kv.webp'),
-    standardEquipment: STANDARD_EQUIPMENT,
-    options: AVAILABLE_OPTIONS,
+    standardEquipment: STANDARD_DRY_EQUIPMENT,
+    options: AVAILABLE_DRY_OPTIONS,
     specs: [
       { power_kva: 630, voltage_hv_str: '35; 36; 37; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1860, pkz_f_w: 7690, pkz_h_w: 8230, i0_pct: 1.00, uk_pct: 6 },
       { power_kva: 800, voltage_hv_str: '35; 36; 37; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 2160, pkz_f_w: 9120, pkz_h_w: 9760, i0_pct: 1.00, uk_pct: 6 },
@@ -139,11 +197,16 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
   {
     id: 'suhie-litaya-35kv-pp',
     slug: 'suhie-litaya-35kv-pp',
-    title: 'Сухие трансформаторы 35 кВ с пониженными потерями',
+    title: 'Сухие трансформаторы с литой изоляцией на класс напряжения 35 кВ с ПБВ ±2х2,5% с пониженными потерями',
     shortTitle: 'Сухие с пониженными потерями 35 кВ',
+    compactTitle: 'Трансформатор 35 кВ, ПБВ, пониженные потери',
+    seriesCode: 'ТСЛ-35 ЭКО',
+    mainCategory: 'dry',
+    subCategory: 'cast_resin',
     voltageClass: '35',
     insulationType: 'cast_resin',
     lossClass: 'low_loss',
+    ecoBadge: true,
     voltageHV: '35; 36; 37; 38,5 кВ',
     voltageLV: '0,4 кВ',
     connectionGroup: 'Д/Ун-11 или У/Ун-0',
@@ -151,8 +214,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     description: 'Энергосберегающая серия сухих трансформаторов 35 кВ со специальной геометрией шихтованного сердечника и сниженными потерями холостого хода для максимальной экономии электроэнергии.',
     tableType: 'dry_f_h',
     image: getImg('suhie-litaya-35kv-pp.webp'),
-    standardEquipment: STANDARD_EQUIPMENT,
-    options: AVAILABLE_OPTIONS,
+    standardEquipment: STANDARD_DRY_EQUIPMENT,
+    options: AVAILABLE_DRY_OPTIONS,
     specs: [
       { power_kva: 630, voltage_hv_str: '35; 36; 37; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1490, pkz_f_w: 7690, pkz_h_w: 8230, i0_pct: 1.00, uk_pct: 6 },
       { power_kva: 800, voltage_hv_str: '35; 36; 37; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1730, pkz_f_w: 9120, pkz_h_w: 9760, i0_pct: 1.00, uk_pct: 6 },
@@ -163,11 +226,19 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
       { power_kva: 2500, voltage_hv_str: '35; 36; 37; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 3560, pkz_f_w: 21800, pkz_h_w: 23300, i0_pct: 0.75, uk_pct: 6 },
     ],
   },
+
+  // ==========================================
+  // Подкатегория 1.2: С воздушно-барьерной изоляцией (H-класс)
+  // ==========================================
   {
     id: 'suhie-vozdushno-baryernaya-10kv',
     slug: 'suhie-vozdushno-baryernaya-10kv',
-    title: 'Сухие трансформаторы с воздушно-барьерной изоляцией, 10 кВ',
+    title: 'Сухие трансформаторы с воздушно-барьерной изоляцией (H-класс) на класс напряжения 10 кВ с ПБВ ±2х2,5%',
     shortTitle: 'Сухие воздушно-барьерные 10 кВ',
+    compactTitle: 'Трансформатор 10 кВ, Nomex H-класс, воздушно-барьерный',
+    seriesCode: 'ТСЗ-10 Nomex',
+    mainCategory: 'dry',
+    subCategory: 'air_barrier',
     voltageClass: '10',
     insulationType: 'air_barrier',
     lossClass: 'standard',
@@ -178,8 +249,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     description: 'Сухие трансформаторы с воздушно-барьерной изоляцией (Nomex) повышенного класса нагревостойкости H (180°C/145°C), с превосходной перегрузочной способностью и экологической безопасностью.',
     tableType: 'dry_h',
     image: getImg('suhie-vozdushno-baryernaya-10kv.webp'),
-    standardEquipment: STANDARD_EQUIPMENT,
-    options: AVAILABLE_OPTIONS,
+    standardEquipment: STANDARD_DRY_EQUIPMENT,
+    options: AVAILABLE_DRY_OPTIONS,
     specs: [
       { power_kva: 630, voltage_hv_str: '6; 6,3; 6,6; 10; 10,5; 11', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1170, pkz_h_w: 6400, i0_pct: 0.90, uk_pct: 6 },
       { power_kva: 800, voltage_hv_str: '6; 6,3; 6,6; 10; 10,5; 11', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1360, pkz_h_w: 7460, i0_pct: 0.90, uk_pct: 6 },
@@ -190,24 +261,63 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
       { power_kva: 2500, voltage_hv_str: '6; 6,3; 6,6; 10; 10,5; 11', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 3240, pkz_h_w: 18450, i0_pct: 0.70, uk_pct: 6 },
     ],
   },
+
+  // ==========================================
+  // КАТЕГОРИЯ 2: МАСЛЯНЫЕ ТРАНСФОРМАТОРЫ 35 кВ
+  // ==========================================
   {
-    id: 'maslyanye-35kv',
-    slug: 'maslyanye-35kv',
-    title: 'Масляные трансформаторы на класс напряжения 35 кВ с РПН ±4х2,5%',
-    shortTitle: 'Масляные трансформаторы 35 кВ',
+    id: 'maslyanye-35kv-pbv',
+    slug: 'maslyanye-35kv-pbv',
+    title: 'Масляные трансформаторы на класс напряжения 35 кВ с ПБВ ±2х2,5%',
+    shortTitle: 'Масляные трансформаторы 35 кВ (ПБВ)',
+    compactTitle: 'Масляный трансформатор 35 кВ, ПБВ, переключение без возбуждения',
+    seriesCode: 'ТМ-35',
+    mainCategory: 'oil',
+    subCategory: 'oil_pbv',
     voltageClass: '35',
     insulationType: 'oil',
     lossClass: 'standard',
     voltageHV: '35; 38,5 кВ',
-    voltageLV: '3,15; 6,3; 10,5 кВ',
+    voltageLV: '0,4 кВ',
+    connectionGroup: 'Д/Ун-11 или У/Ун-0',
+    regulationType: 'ПБВ ±2х2,5%',
+    description: 'Трёхфазные масляные трансформаторы на класс напряжения 35 кВ с переключением ответвлений без возбуждения ПБВ ±2х2,5% мощностью 630–2500 кВА. Напряжение ВН: 35, 38,5 кВ; НН: 0,4 кВ. Схема соединения Д/Ун-11 или У/Ун-0.',
+    tableType: 'oil',
+    image: getImg('tmg-series.webp'),
+    standardEquipment: STANDARD_OIL_EQUIPMENT,
+    options: AVAILABLE_OIL_OPTIONS,
+    specs: [
+      { power_kva: 630, voltage_hv_str: '35; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 664, pkz_w: 7860, i0_pct: 0.65, uk_pct: 6.5 },
+      { power_kva: 800, voltage_hv_str: '35; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 784, pkz_w: 9400, i0_pct: 0.65, uk_pct: 6.5 },
+      { power_kva: 1000, voltage_hv_str: '35; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 920, pkz_w: 11500, i0_pct: 0.65, uk_pct: 6.5 },
+      { power_kva: 1250, voltage_hv_str: '35; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1120, pkz_w: 13900, i0_pct: 0.60, uk_pct: 6.5 },
+      { power_kva: 1600, voltage_hv_str: '35; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1350, pkz_w: 16600, i0_pct: 0.60, uk_pct: 6.5 },
+      { power_kva: 2000, voltage_hv_str: '35; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1590, pkz_w: 19700, i0_pct: 0.55, uk_pct: 6.5 },
+      { power_kva: 2500, voltage_hv_str: '35; 38,5', voltage_lv_str: '0,4', connection_group: 'Д/Ун-11 или У/Ун-0', p0_w: 1890, pkz_w: 23200, i0_pct: 0.55, uk_pct: 6.5 },
+    ],
+  },
+  {
+    id: 'maslyanye-35kv',
+    slug: 'maslyanye-35kv',
+    title: 'Масляные трансформаторы на класс напряжения 35 кВ с РПН ±4х2,5%',
+    shortTitle: 'Масляные трансформаторы 35 кВ (РПН)',
+    compactTitle: 'Масляный трансформатор 35 кВ, РПН, регулирование под нагрузкой',
+    seriesCode: 'ТМН-35',
+    mainCategory: 'oil',
+    subCategory: 'oil_rpn',
+    voltageClass: '35',
+    insulationType: 'oil',
+    lossClass: 'standard',
+    voltageHV: '35; 38,5 кВ',
+    voltageLV: '3,15; 6,3; 10,5 кВ (0,4 кВ по ТЗ)',
     connectionGroup: 'У/Д-11',
     regulationType: 'РПН ±4х2,5%',
     description: 'Трёхфазные масляные трансформаторы на класс напряжения 35 кВ с регулированием напряжения под нагрузкой РПН ±4х2,5% мощностью 630–6300 кВА. Напряжения ВН 35, 38,5 кВ; НН 3,15, 6,3, 10,5 кВ (0,4 кВ по ТЗ). Схема и группа соединений У/Д-11.',
     applicationArea: 'Наружная установка, понизительные подстанции, распределительные сети и промышленные объекты. Конкретное исполнение, вводы, защита и комплектация согласовываются при подготовке предложения.',
     tableType: 'oil',
     image: getImg('maslyanye-35kv.webp'),
-    standardEquipment: STANDARD_EQUIPMENT,
-    options: AVAILABLE_OPTIONS,
+    standardEquipment: STANDARD_OIL_EQUIPMENT,
+    options: AVAILABLE_OIL_OPTIONS,
     specs: [
       { power_kva: 630, voltage_hv_str: '35', voltage_lv_str: '3,15; 6,3; 10,5', connection_group: 'У/Д-11', p0_w: 664, pkz_w: 7860, i0_pct: 0.45, uk_pct: 6.5 },
       { power_kva: 800, voltage_hv_str: '35', voltage_lv_str: '3,15; 6,3; 10,5', connection_group: 'У/Д-11', p0_w: 784, pkz_w: 9400, i0_pct: 0.45, uk_pct: 6.5 },
@@ -220,6 +330,40 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
       { power_kva: 4000, voltage_hv_str: '35; 38,5', voltage_lv_str: '3,15; 6,3; 10,5', connection_group: 'У/Д-11', p0_w: 2890, pkz_w: 27300, i0_pct: 0.30, uk_pct: 7.0 },
       { power_kva: 5000, voltage_hv_str: '35; 38,5', voltage_lv_str: '3,15; 6,3; 10,5', connection_group: 'У/Д-11', p0_w: 3460, pkz_w: 31300, i0_pct: 0.30, uk_pct: 7.0 },
       { power_kva: 6300, voltage_hv_str: '35; 38,5', voltage_lv_str: '3,15; 6,3; 10,5', connection_group: 'У/Д-11', p0_w: 4190, pkz_w: 35000, i0_pct: 0.30, uk_pct: 7.0 },
+    ],
+  },
+
+  // ==========================================
+  // КАТЕГОРИЯ 3: ТРАНСФОРМАТОРЫ СПЕЦИАЛЬНОГО НАЗНАЧЕНИЯ
+  // ==========================================
+  {
+    id: 'special-transformatory',
+    slug: 'special-transformatory',
+    title: 'Трансформаторы специального назначения (преобразовательные, выпрямительные, OEM)',
+    shortTitle: 'Трансформаторы специального назначения',
+    compactTitle: 'Силовые трансформаторы для выпрямителей и спецназначения (OEM)',
+    seriesCode: 'СПЕЦ-Т / OEM',
+    mainCategory: 'special',
+    subCategory: 'special',
+    voltageClass: '10',
+    insulationType: 'cast_resin',
+    lossClass: 'standard',
+    voltageHV: '6; 10; 20; 35 кВ',
+    voltageLV: 'По ТЗ (включая расщепленные фазы)',
+    connectionGroup: 'По схеме заказчика (6/12/24-пульсные выпрямители)',
+    regulationType: 'ПБВ / РПН по ТЗ',
+    description: 'Узкоспециализированное силовое оборудование для питания выпрямителей, электропечей, тяговых подстанций и солнечных инверторов. Производство по индивидуальным проектам и под собственной торговой маркой заказчика (OEM/Private Label).',
+    tableType: 'special',
+    image: getImg('tdns-series.webp'),
+    standardEquipment: STANDARD_SPECIAL_EQUIPMENT,
+    options: AVAILABLE_SPECIAL_OPTIONS,
+    specs: [
+      { power_kva: 630, voltage_hv_str: '6; 10; 35', voltage_lv_str: 'По ТЗ', connection_group: 'По ТЗ', p0_w: 1250, pkz_f_w: 6800, i0_pct: 0.85, uk_pct: 6.0 },
+      { power_kva: 1000, voltage_hv_str: '6; 10; 35', voltage_lv_str: 'По ТЗ', connection_group: 'По ТЗ', p0_w: 1680, pkz_f_w: 8900, i0_pct: 0.85, uk_pct: 6.0 },
+      { power_kva: 1600, voltage_hv_str: '6; 10; 35', voltage_lv_str: 'По ТЗ', connection_group: 'По ТЗ', p0_w: 2350, pkz_f_w: 12800, i0_pct: 0.80, uk_pct: 6.0 },
+      { power_kva: 2500, voltage_hv_str: '6; 10; 35', voltage_lv_str: 'По ТЗ', connection_group: 'По ТЗ', p0_w: 3450, pkz_f_w: 18900, i0_pct: 0.70, uk_pct: 6.5 },
+      { power_kva: 4000, voltage_hv_str: '10; 35', voltage_lv_str: 'По ТЗ', connection_group: 'По ТЗ', p0_w: 4800, pkz_f_w: 28500, i0_pct: 0.60, uk_pct: 7.0 },
+      { power_kva: 6300, voltage_hv_str: '10; 35', voltage_lv_str: 'По ТЗ', connection_group: 'По ТЗ', p0_w: 6900, pkz_f_w: 39000, i0_pct: 0.50, uk_pct: 7.5 },
     ],
   },
 ];
