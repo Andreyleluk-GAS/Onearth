@@ -9,8 +9,12 @@ interface Props {
   onOpenQuoteModal: (categorySlug?: string) => void;
 }
 
-const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
-const logoUrl = `${BASE}/images/logo.webp`;
+const getLogoUrl = () => {
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/Onearth')) {
+    return '/Onearth/images/logo.webp';
+  }
+  return '/images/logo.webp';
+};
 
 export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteModal }) => {
   const { t, categories } = useLanguage();
@@ -78,7 +82,7 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
           className="text-left flex items-center gap-3.5 group cursor-pointer"
         >
           <img
-            src={logoUrl}
+            src={getLogoUrl()}
             alt="Hubei Onearth Trading Company Limited"
             className="h-9 sm:h-11 md:h-13 w-auto object-contain transition-transform group-hover:scale-102"
           />

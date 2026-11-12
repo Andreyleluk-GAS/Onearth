@@ -203,6 +203,13 @@ function writeStaticHtml(targetRelativePath, title, description, canonicalUrl, b
 
   let html = baseIndexHtml;
 
+  const segments = targetRelativePath.split(/[\/\\]/).filter(Boolean);
+  const rootPrefix = segments.length > 0 ? '../'.repeat(segments.length) : './';
+  html = html.replaceAll('./assets/', `${rootPrefix}assets/`);
+  html = html.replaceAll('./images/', `${rootPrefix}images/`);
+  html = html.replaceAll('./favicon', `${rootPrefix}favicon`);
+  html = html.replaceAll('./apple-touch-icon', `${rootPrefix}apple-touch-icon`);
+
   html = html.replace(/<title>.*?<\/title>/, `<title>${title}</title>`);
   html = html.replace(/<meta\s+name="description"\s+content=".*?"\s*\/>/, `<meta name="description" content="${description}" />`);
   html = html.replace(/<link\s+rel="canonical"\s+href=".*?"\s*\/>/, `<link rel="canonical" href="${canonicalUrl}" />`);

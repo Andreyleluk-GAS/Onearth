@@ -16,7 +16,9 @@ const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
 
 const normalizePath = (fullPath: string): string => {
   let p = fullPath;
-  if (BASE && p.startsWith(BASE)) {
+  if (p.startsWith('/Onearth')) {
+    p = p.slice('/Onearth'.length);
+  } else if (BASE && p.startsWith(BASE)) {
     p = p.slice(BASE.length);
   }
   return p.replace(/\/$/, '') || '/';
@@ -43,8 +45,10 @@ export const App: React.FC = () => {
   }, []);
 
   const navigate = (path: string) => {
+    const isGhPagesSubpath = typeof window !== 'undefined' && window.location.pathname.startsWith('/Onearth');
+    const prefix = isGhPagesSubpath ? '/Onearth' : (BASE || '');
     const targetRelative = path.startsWith('/') ? path : `/${path}`;
-    const targetFull = `${BASE}${targetRelative}`;
+    const targetFull = `${prefix}${targetRelative}`;
     setCurrentPath(normalizePath(targetRelative));
     if (typeof window !== 'undefined') {
       window.history.pushState({}, '', targetFull);

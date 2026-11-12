@@ -1,8 +1,11 @@
 import { TransformerCategory } from '../types/transformer';
 
-const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
-
-const getImg = (name: string) => `${BASE}/images/products/${name}`;
+const getImg = (name: string) => {
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/Onearth')) {
+    return `/Onearth/images/products/${name}`;
+  }
+  return `/images/products/${name}`;
+};
 
 // Exact standard equipment text from Task-1
 const STANDARD_DRY_EQUIPMENT: string[] = [
