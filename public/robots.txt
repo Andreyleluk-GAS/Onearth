@@ -11,10 +11,10 @@ Allow: /postavka/
 Allow: /kontakty/
 Allow: /politika-konfidencialnosti/
 Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid
-Host: https://onearth-trading.ru
+Host: https://hubeienergy.ru
 
 User-agent: *
 Disallow: /*?*
 Disallow: /*utm_*
 Allow: /
-Sitemap: https://onearth-trading.ru/sitemap.xml
+Sitemap: https://hubeienergy.ru/sitemap.xml

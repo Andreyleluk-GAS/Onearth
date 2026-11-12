@@ -25,13 +25,13 @@ Allow: /postavka/
 Allow: /kontakty/
 Allow: /politika-konfidencialnosti/
 Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid
-Host: https://onearth-trading.ru
+Host: https://hubeienergy.ru
 
 User-agent: *
 Disallow: /*?*
 Disallow: /*utm_*
 Allow: /
-Sitemap: https://onearth-trading.ru/sitemap.xml
+Sitemap: https://hubeienergy.ru/sitemap.xml
 `;
 
 fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt.trim());
@@ -39,21 +39,21 @@ console.log('✅ Generated public/robots.txt');
 
 // 2. Canonical URLs list for Hubei Onearth Trading
 const CANONICAL_URLS = [
-  { loc: 'https://onearth-trading.ru/', priority: '1.0', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/', priority: '1.0', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/suhie-litaya-10kv/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/suhie-litaya-10kv-pp/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/suhie-litaya-20kv/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/suhie-litaya-35kv/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/suhie-litaya-35kv-pp/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/suhie-vozdushno-baryernaya-10kv/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/maslyanye-35kv/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/maslyanye-35kv-pbv/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/katalog/special-transformatory/', priority: '0.9', changefreq: 'weekly' },
-  { loc: 'https://onearth-trading.ru/po-tz/', priority: '0.9', changefreq: 'monthly' },
-  { loc: 'https://onearth-trading.ru/postavka/', priority: '0.9', changefreq: 'monthly' },
-  { loc: 'https://onearth-trading.ru/kontakty/', priority: '0.8', changefreq: 'monthly' },
-  { loc: 'https://onearth-trading.ru/politika-konfidencialnosti/', priority: '0.5', changefreq: 'yearly' },
+  { loc: 'https://hubeienergy.ru/', priority: '1.0', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/', priority: '1.0', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/suhie-litaya-10kv/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/suhie-litaya-10kv-pp/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/suhie-litaya-20kv/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/suhie-litaya-35kv/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/suhie-litaya-35kv-pp/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/suhie-vozdushno-baryernaya-10kv/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/maslyanye-35kv/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/maslyanye-35kv-pbv/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/katalog/special-transformatory/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/po-tz/', priority: '0.9', changefreq: 'monthly' },
+  { loc: 'https://hubeienergy.ru/postavka/', priority: '0.9', changefreq: 'monthly' },
+  { loc: 'https://hubeienergy.ru/kontakty/', priority: '0.8', changefreq: 'monthly' },
+  { loc: 'https://hubeienergy.ru/politika-konfidencialnosti/', priority: '0.5', changefreq: 'yearly' },
 ];
 
 // Generate sitemap.xml

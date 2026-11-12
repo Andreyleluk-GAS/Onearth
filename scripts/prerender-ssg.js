@@ -221,7 +221,7 @@ function writeStaticHtml(targetRelativePath, title, description, canonicalUrl, b
 
 PAGES_TO_PRERENDER.forEach((page) => {
   const relPath = page.route.replace(/^\//, '');
-  const canonicalUrl = `https://onearth-trading.ru${page.route}`;
+  const canonicalUrl = `https://hubeienergy.ru${page.route}`;
   writeStaticHtml(relPath, page.title, page.description, canonicalUrl, page.content);
 });
 
@@ -232,5 +232,9 @@ console.log('✅ Generated dist/404.html for GitHub Pages SPA routing');
 // Create .nojekyll in dist to bypass Jekyll processing on GitHub Pages
 fs.writeFileSync(path.join(distDir, '.nojekyll'), '');
 console.log('✅ Generated dist/.nojekyll');
+
+// Ensure CNAME exists in dist for GitHub Pages custom domain
+fs.writeFileSync(path.join(distDir, 'CNAME'), 'hubeienergy.ru\n');
+console.log('✅ Generated dist/CNAME (hubeienergy.ru)');
 
 console.log('🎉 SSG snapshots successfully generated.');
