@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Phone, CheckCircle, Copy, Send } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { crmService } from '../services/crmService';
 
 interface Props {
   isOpen: boolean;
@@ -146,6 +147,23 @@ export const RequestQuoteModal: React.FC<Props> = ({
     if (!consentGiven) {
       setConsentError(true);
       return;
+    }
+    // Auto-record lead in CRM
+    try {
+      crmService.addLead({
+        companyName: company || 'Без названия',
+        contactName: contactName || 'Контактное лицо',
+        phone,
+        email,
+        categoryTitle,
+        categorySlug,
+        powerKva: power,
+        comment,
+        status: 'new',
+        source: 'catalog_card',
+      });
+    } catch {
+      // safe fallback
     }
     setIsSubmitted(true);
   };

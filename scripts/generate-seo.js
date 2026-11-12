@@ -18,6 +18,8 @@ const robotsTxt = `# robots.txt for Hubei Onearth Trading Company Limited
 User-agent: Yandex
 Disallow: /*?*
 Disallow: /*utm_*
+Disallow: /crm/
+Disallow: /admin/
 Allow: /
 Allow: /katalog/
 Allow: /po-tz/
@@ -30,6 +32,8 @@ Host: https://hubeienergy.ru
 User-agent: *
 Disallow: /*?*
 Disallow: /*utm_*
+Disallow: /crm/
+Disallow: /admin/
 Allow: /
 Sitemap: https://hubeienergy.ru/sitemap.xml
 `;

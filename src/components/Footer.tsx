@@ -1,13 +1,14 @@
 import React from 'react';
-import { Phone, Mail, MapPin, ShieldCheck, ArrowUpRight } from 'lucide-react';
+import { Phone, Mail, MapPin, ShieldCheck, ArrowUpRight, Settings } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface Props {
   onNavigate: (path: string) => void;
   onOpenQuoteModal: (categorySlug?: string) => void;
+  onOpenCrmLogin?: () => void;
 }
 
-export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
+export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal, onOpenCrmLogin }) => {
   const { t, categories } = useLanguage();
 
   return (
@@ -164,9 +165,23 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
 
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
-          <div>
-            © 2026 {t.footer.legalEntity}. {t.footer.rights}
+          <div className="flex items-center gap-3">
+            <span>
+              © 2026 {t.footer.legalEntity}. {t.footer.rights}
+            </span>
+
+            {/* Discreet CRM admin entrance icon */}
+            <button
+              type="button"
+              onClick={onOpenCrmLogin}
+              className="text-slate-400 hover:text-slate-200 transition-all p-1 rounded hover:bg-white/10 opacity-35 hover:opacity-100 cursor-pointer"
+              title="Панель управления (CRM)"
+              aria-label="Панель управления (CRM)"
+            >
+              <Settings className="w-3.5 h-3.5" />
+            </button>
           </div>
+
           <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
             <button
               type="button"

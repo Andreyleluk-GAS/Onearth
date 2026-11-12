@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { RequestQuoteModal } from './components/RequestQuoteModal';
+import { CrmLoginModal } from './components/CrmLoginModal';
 import { HomePage } from './pages/HomePage';
 import { CatalogPage } from './pages/CatalogPage';
 import { CategoryDetailPage } from './pages/CategoryDetailPage';
@@ -9,6 +10,8 @@ import { PoTzPage } from './pages/PoTzPage';
 import { PostavkaPage } from './pages/PostavkaPage';
 import { KontaktyPage } from './pages/KontaktyPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { CrmPage } from './pages/CrmPage';
+import { crmService } from './services/crmService';
 import { useLanguage } from './i18n/LanguageContext';
 import { Grid, FileText, Truck, Phone, Zap } from 'lucide-react';
 
@@ -36,6 +39,12 @@ export const App: React.FC = () => {
   const [modalCategorySlug, setModalCategorySlug] = useState<string | undefined>();
   const [modalPower, setModalPower] = useState<string | undefined>();
 
+  // CRM State
+  const [isCrmLoginOpen, setIsCrmLoginOpen] = useState(false);
+  const [isCrmAuthenticated, setIsCrmAuthenticated] = useState<boolean>(() => {
+    return crmService.isAuthenticated();
+  });
+
   useEffect(() => {
     const handlePopState = () => {
       setCurrentPath(normalizePath(window.location.pathname));
@@ -62,9 +71,61 @@ export const App: React.FC = () => {
     setIsQuoteModalOpen(true);
   };
 
+  const handleOpenCrm = () => {
+    if (crmService.isAuthenticated()) {
+      setIsCrmAuthenticated(true);
+      navigate('/crm');
+    } else {
+      setIsCrmLoginOpen(true);
+    }
+  };
+
+  const handleCrmLoginSuccess = () => {
+    setIsCrmAuthenticated(true);
+    setIsCrmLoginOpen(false);
+    navigate('/crm');
+  };
+
+  const handleCrmLogout = () => {
+    crmService.logout();
+    setIsCrmAuthenticated(false);
+    navigate('/');
+  };
+
+  const isCrmRoute = currentPath === '/crm' || currentPath === '/admin';
+
+  // If inside CRM and authenticated: render dedicated CRM Dashboard
+  if (isCrmRoute && (isCrmAuthenticated || crmService.isAuthenticated())) {
+    return (
+      <CrmPage
+        onNavigate={navigate}
+        onLogout={handleCrmLogout}
+      />
+    );
+  }
+
   // Router matching logic
   const renderPage = () => {
     const cleanPath = currentPath;
+
+    // 0. CRM route fallback if not authenticated
+    if (cleanPath === '/crm' || cleanPath === '/admin') {
+      return (
+        <div className="max-w-md mx-auto my-16 p-8 bg-white rounded-2xl border border-slate-200 shadow-md text-center">
+          <h2 className="text-lg font-bold text-navy mb-2">Доступ ограничен</h2>
+          <p className="text-xs text-slate-500 mb-6">
+            Для перехода в панель управления и веб-аналитику требуется авторизация.
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsCrmLoginOpen(true)}
+            className="w-full bg-[#0b3d66] hover:bg-navy-dark text-white font-bold py-2.5 px-4 rounded-xl text-xs"
+          >
+            Войти как Rustam
+          </button>
+        </div>
+      );
+    }
 
     // 1. Home
     if (cleanPath === '/' || cleanPath === '/index.html') {
@@ -144,7 +205,11 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <Footer onNavigate={navigate} onOpenQuoteModal={openQuoteModal} />
+      <Footer
+        onNavigate={navigate}
+        onOpenQuoteModal={openQuoteModal}
+        onOpenCrmLogin={handleOpenCrm}
+      />
 
       {/* Global RFQ / Quote Modal */}
       <RequestQuoteModal
@@ -152,6 +217,13 @@ export const App: React.FC = () => {
         onClose={() => setIsQuoteModalOpen(false)}
         initialCategorySlug={modalCategorySlug}
         initialPower={modalPower}
+      />
+
+      {/* Discreet CRM Authentication Modal */}
+      <CrmLoginModal
+        isOpen={isCrmLoginOpen}
+        onClose={() => setIsCrmLoginOpen(false)}
+        onLoginSuccess={handleCrmLoginSuccess}
       />
 
       {/* Sticky Mobile Floating Bottom Action Bar */}

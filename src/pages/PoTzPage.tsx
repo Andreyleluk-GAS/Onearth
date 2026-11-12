@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Cpu, Sliders, ShieldCheck, FileText, Send, Copy, CheckSquare, Zap, Layers, Activity, Truck, Settings } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { crmService } from '../services/crmService';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -183,6 +184,24 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
       setConsentError(true);
       return;
     }
+    try {
+      crmService.addLead({
+        companyName: 'Заказчик по ТЗ (Конфигуратор)',
+        contactName: 'Снабжение / Главный энергетик',
+        phone: 'В письме / Запрос КП',
+        email: 'mail@mail.ru',
+        categoryTitle: `Изготовление по ТЗ (${effectivePower}, ${voltageHV}/${voltageLV})`,
+        categorySlug: 'po-tz',
+        powerKva: effectivePower,
+        voltageHV,
+        voltageLV,
+        comment: `Схема: ${phaseVector}, Uk=${uk}, Регулирование=${regulation}, Охлаждение=${cooling}, Обмотки=${windings}. ${comments || ''}`,
+        status: 'new',
+        source: 'configurator_tz',
+      });
+    } catch {
+      // safe fallback
+    }
   };
 
   const handleCopy = async () => {
@@ -191,6 +210,20 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
       return;
     }
     try {
+      crmService.addLead({
+        companyName: 'Заказчик по ТЗ (Копирование опросного листа)',
+        contactName: 'Снабжение / Главный энергетик',
+        phone: 'В опросном листе',
+        email: 'mail@mail.ru',
+        categoryTitle: `Изготовление по ТЗ (${effectivePower}, ${voltageHV}/${voltageLV})`,
+        categorySlug: 'po-tz',
+        powerKva: effectivePower,
+        voltageHV,
+        voltageLV,
+        comment: `Схема: ${phaseVector}, Uk=${uk}, Регулирование=${regulation}. ${comments || ''}`,
+        status: 'new',
+        source: 'configurator_tz',
+      });
       await navigator.clipboard.writeText(getTzSummary());
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
