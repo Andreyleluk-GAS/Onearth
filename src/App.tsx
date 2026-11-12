@@ -12,6 +12,7 @@ import { KontaktyPage } from './pages/KontaktyPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { CrmPage } from './pages/CrmPage';
 import { crmService } from './services/crmService';
+import { trackMetrikaHit } from './services/yandexMetrika';
 import { useLanguage } from './i18n/LanguageContext';
 import { Grid, FileText, Truck, Phone, Zap } from 'lucide-react';
 
@@ -52,6 +53,11 @@ export const App: React.FC = () => {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  // Track SPA pageviews in Yandex.Metrika
+  useEffect(() => {
+    trackMetrikaHit(currentPath);
+  }, [currentPath]);
 
   const navigate = (path: string) => {
     const isGhPagesSubpath = typeof window !== 'undefined' && window.location.pathname.startsWith('/Onearth');

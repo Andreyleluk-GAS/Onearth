@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Phone, Mail, Menu, X, ChevronDown, ShieldCheck, Zap } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useLanguage } from '../i18n/LanguageContext';
+import { trackMetrikaGoal } from '../services/yandexMetrika';
 
 interface Props {
   currentPath: string;
@@ -54,6 +55,7 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
           <div className="flex items-center gap-3 sm:gap-4 ml-auto">
             <a
               href="tel:+73431234567"
+              onClick={() => trackMetrikaGoal('phone_click', { location: 'header' })}
               className="hidden xs:flex items-center gap-1.5 text-white hover:text-[#e6a417] font-bold transition-colors"
             >
               <Phone className="w-3.5 h-3.5 text-[#e6a417]" />
@@ -61,6 +63,7 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
             </a>
             <a
               href="mailto:mail@mail.ru"
+              onClick={() => trackMetrikaGoal('email_click', { location: 'header' })}
               className="hidden sm:flex items-center gap-1.5 text-slate-200 hover:text-white transition-colors"
             >
               <Mail className="w-3.5 h-3.5 text-[#e6a417]" />
@@ -252,6 +255,7 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
             </button>
             <a
               href="tel:+73431234567"
+              onClick={() => trackMetrikaGoal('phone_click', { location: 'header_mobile' })}
               className="w-full bg-slate-100 text-navy py-2 rounded-lg font-semibold text-xs text-center flex items-center justify-center gap-1.5"
             >
               <Phone className="w-3.5 h-3.5 text-[#e6a417]" />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Phone, Mail, MapPin, ShieldCheck, ArrowUpRight, Settings } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { trackMetrikaGoal } from '../services/yandexMetrika';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -129,6 +130,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal, onOpenCr
             <div className="space-y-2 text-xs">
               <a
                 href="tel:+73431234567"
+                onClick={() => trackMetrikaGoal('phone_click', { location: 'footer' })}
                 className="flex items-center gap-2 text-white hover:text-[#e6a417] font-bold text-sm transition-colors"
               >
                 <Phone className="w-4 h-4 text-[#e6a417]" />
@@ -137,6 +139,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal, onOpenCr
 
               <a
                 href="mailto:mail@mail.ru"
+                onClick={() => trackMetrikaGoal('email_click', { location: 'footer' })}
                 className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors"
               >
                 <Mail className="w-4 h-4 text-[#e6a417]" />

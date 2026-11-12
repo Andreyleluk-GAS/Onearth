@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BarChart3,
   TrendingUp,
@@ -28,6 +28,11 @@ import {
   Database,
   Building2,
   RefreshCw,
+  Key,
+  Check,
+  AlertCircle,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import {
   crmService,
@@ -36,6 +41,11 @@ import {
   SEO_PAGE_POPULARITY,
   SEO_GEO_REGIONS,
 } from '../services/crmService';
+import {
+  yandexMetrikaApi,
+  MetrikaReportResult,
+} from '../services/yandexMetrikaApi';
+import { YANDEX_METRIKA_COUNTER_ID } from '../services/yandexMetrika';
 import { TRANSFORMER_CATEGORIES } from '../data/transformerCatalog';
 
 interface Props {
@@ -57,6 +67,59 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
   const [leadStatusFilter, setLeadStatusFilter] = useState<string>('all');
   const [leadSearchTerm, setLeadSearchTerm] = useState('');
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
+
+  // Live Yandex Metrika State
+  const [metrikaReport, setMetrikaReport] = useState<MetrikaReportResult | null>(null);
+  const [isLoadingMetrika, setIsLoadingMetrika] = useState<boolean>(false);
+  const [oauthToken, setOauthToken] = useState<string>(() => yandexMetrikaApi.getOAuthToken());
+  const [tokenInput, setTokenInput] = useState<string>('');
+  const [showTokenInput, setShowTokenInput] = useState<boolean>(false);
+  const [showSecretToken, setShowSecretToken] = useState<boolean>(false);
+  const [tokenSaveNotice, setTokenSaveNotice] = useState<string | null>(null);
+
+  const fetchMetrika = async () => {
+    setIsLoadingMetrika(true);
+    try {
+      const res = await yandexMetrikaApi.fetchLiveReport(selectedPeriod);
+      setMetrikaReport(res);
+    } catch {
+      // safe fallback
+    } finally {
+      setIsLoadingMetrika(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMetrika();
+  }, [selectedPeriod]);
+
+  const handleSaveToken = (tokenToSave: string) => {
+    if (!tokenToSave.trim()) return;
+    yandexMetrikaApi.setOAuthToken(tokenToSave.trim());
+    setOauthToken(tokenToSave.trim());
+    setTokenSaveNotice('OAuth-токен сохранён! Подключаемся к Яндекс.Метрике...');
+    setShowTokenInput(false);
+    fetchMetrika();
+    setTimeout(() => setTokenSaveNotice(null), 4000);
+  };
+
+  const handleRemoveToken = () => {
+    if (window.confirm('Отключить OAuth-токен Яндекс.Метрики?')) {
+      yandexMetrikaApi.removeOAuthToken();
+      setOauthToken('');
+      setTokenInput('');
+      setTokenSaveNotice('Токен отключен');
+      fetchMetrika();
+      setTimeout(() => setTokenSaveNotice(null), 3000);
+    }
+  };
+
+  const formatDuration = (sec: number) => {
+    if (!sec) return '0 с';
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return m > 0 ? `${m} мин ${s} с` : `${s} с`;
+  };
 
   // New lead form
   const [newCompany, setNewCompany] = useState('');
@@ -119,12 +182,25 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
     setNewComment('');
   };
 
+  // Dynamic Queries and Pages from Yandex.Metrika or baseline
+  const activeQueries = (metrikaReport?.searchQueries && metrikaReport.searchQueries.length > 0)
+    ? metrikaReport.searchQueries
+    : SEO_SEARCH_QUERIES;
+
   // Filtered queries
-  const filteredQueries = SEO_SEARCH_QUERIES.filter((q) => {
+  const filteredQueries = activeQueries.filter((q) => {
     const matchesSource = searchSourceFilter === 'all' || q.source === searchSourceFilter;
     const matchesTerm = !searchQueryTerm || q.query.toLowerCase().includes(searchQueryTerm.toLowerCase());
     return matchesSource && matchesTerm;
   });
+
+  const activePages = (metrikaReport?.popularPages && metrikaReport.popularPages.length > 0)
+    ? metrikaReport.popularPages
+    : SEO_PAGE_POPULARITY;
+
+  const activeGeography = (metrikaReport?.geography && metrikaReport.geography.length > 0)
+    ? metrikaReport.geography
+    : SEO_GEO_REGIONS;
 
   // Filtered leads
   const filteredLeads = leads.filter((l) => {
@@ -302,6 +378,135 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
               </div>
             </div>
 
+            {/* Yandex.Metrika Live Integration Bar */}
+            <div className="bg-gradient-to-r from-[#072640] via-[#0b3d66] to-[#072640] text-white p-4 sm:p-5 rounded-2xl shadow-sm border border-blue-900 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="flex items-start sm:items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-[#e6a417]/20 border border-[#e6a417]/40 flex items-center justify-center shrink-0 text-[#e6a417]">
+                  <Activity className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-extrabold text-sm sm:text-base text-white">
+                      Яндекс.Метрика · Счётчик № {YANDEX_METRIKA_COUNTER_ID}
+                    </span>
+                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      Установлен на hubeienergy.ru
+                    </span>
+                    {metrikaReport?.status === 'connected' ? (
+                      <span className="bg-blue-500/20 text-blue-300 border border-blue-400/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        API подключено
+                      </span>
+                    ) : metrikaReport?.status === 'pending_accumulation' ? (
+                      <span className="bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        Накопление статистики
+                      </span>
+                    ) : (
+                      <span className="bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        Требуется OAuth-токен для API
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-300 mt-1">
+                    {metrikaReport?.status === 'connected'
+                      ? `Прямые данные из Reporting API (обновлено: ${metrikaReport.kpi.lastUpdated})`
+                      : metrikaReport?.status === 'pending_accumulation'
+                      ? 'Счётчик создан недавно и ведёт запись данных в фоновом режиме. Первые сессии обрабатываются Яндексом.'
+                      : 'Код счётчика с вебвизором 2.0 и отслеживанием целей активен на всех страницах сайта.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={fetchMetrika}
+                  disabled={isLoadingMetrika}
+                  className="bg-white/10 hover:bg-white/20 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  title="Обновить данные из Яндекс.Метрики"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingMetrika ? 'animate-spin' : ''}`} />
+                  <span>{isLoadingMetrika ? 'Загрузка...' : 'Обновить'}</span>
+                </button>
+
+                <a
+                  href={`https://metrika.yandex.ru/dashboard?id=${YANDEX_METRIKA_COUNTER_ID}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                >
+                  <span>Веб-кабинет Метрики</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                {!oauthToken && (
+                  <button
+                    type="button"
+                    onClick={() => setShowTokenInput(!showTokenInput)}
+                    className="bg-white/15 hover:bg-white/25 text-white px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Key className="w-3.5 h-3.5 text-amber-300" />
+                    <span>{showTokenInput ? 'Скрыть токен' : 'Подключить API'}</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Quick OAuth Token Connection Box (if toggled or no token) */}
+            {(showTokenInput || (!oauthToken && metrikaReport?.status === 'no_token')) && (
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-xs text-slate-700 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-2 text-[#072640] font-bold text-sm">
+                    <Key className="w-4 h-4 text-amber-600" />
+                    <span>Подключение прямого чтения отчетов Яндекс.Метрики в CRM</span>
+                  </div>
+                  {oauthToken && (
+                    <button
+                      type="button"
+                      onClick={() => setShowTokenInput(false)}
+                      className="text-slate-400 hover:text-slate-700 text-xs"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                <p className="leading-relaxed">
+                  Счётчик <strong>№ {YANDEX_METRIKA_COUNTER_ID}</strong> уже установлен на сайте и непрерывно фиксирует визиты. Чтобы эта вкладка CRM могла автоматически запрашивать официальные данные через <em>Yandex Metrika Reporting API</em> без захода на Яндекс, укажите OAuth-токен вашего Яндекс-аккаунта:
+                </p>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <a
+                    href={yandexMetrikaApi.getOAuthAuthorizeUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 bg-[#0b3d66] hover:bg-navy-dark text-white px-3.5 py-2 rounded-xl font-bold shrink-0 shadow-xs"
+                  >
+                    <span>1. Получить токен в Яндексе</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <input
+                    type="text"
+                    placeholder="2. Вставьте полученный токен (y0_...)"
+                    value={tokenInput}
+                    onChange={(e) => setTokenInput(e.target.value)}
+                    className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-[#0b3d66] font-mono text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleSaveToken(tokenInput)}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl font-bold shrink-0 transition-colors cursor-pointer"
+                  >
+                    Подключить API
+                  </button>
+                </div>
+                {tokenSaveNotice && (
+                  <div className="text-emerald-700 font-bold text-xs flex items-center gap-1.5">
+                    <Check className="w-4 h-4" />
+                    <span>{tokenSaveNotice}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* KPI Cards Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs hover:border-[#0b3d66] transition-all">
@@ -309,10 +514,24 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                   <span className="text-xs font-bold uppercase tracking-wider">Визиты</span>
                   <Users className="w-4 h-4 text-[#0b3d66]" />
                 </div>
-                <div className="text-2xl font-black text-[#072640]">1,420</div>
+                <div className="text-2xl font-black text-[#072640]">
+                  {metrikaReport?.status === 'connected'
+                    ? metrikaReport.kpi.visits.toLocaleString('ru-RU')
+                    : metrikaReport?.status === 'pending_accumulation'
+                    ? '0'
+                    : '1,420'}
+                </div>
                 <div className="text-[11px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                  <span>+18.4% к пред. периоду</span>
+                  {metrikaReport?.status === 'connected' ? (
+                    <span className="text-blue-600 font-semibold">● Живые данные API</span>
+                  ) : metrikaReport?.status === 'pending_accumulation' ? (
+                    <span className="text-amber-600 font-semibold">Накапливается</span>
+                  ) : (
+                    <>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                      <span>+18.4% к пред. периоду</span>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -321,7 +540,13 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                   <span className="text-xs font-bold uppercase tracking-wider">Посетители</span>
                   <Globe className="w-4 h-4 text-blue-600" />
                 </div>
-                <div className="text-2xl font-black text-[#072640]">890</div>
+                <div className="text-2xl font-black text-[#072640]">
+                  {metrikaReport?.status === 'connected'
+                    ? metrikaReport.kpi.users.toLocaleString('ru-RU')
+                    : metrikaReport?.status === 'pending_accumulation'
+                    ? '0'
+                    : '890'}
+                </div>
                 <div className="text-[11px] text-slate-500 mt-1">ЦА: РФ, ЕАЭС, промпредприятия</div>
               </div>
 
@@ -330,8 +555,18 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                   <span className="text-xs font-bold uppercase tracking-wider">Просмотры</span>
                   <Activity className="w-4 h-4 text-purple-600" />
                 </div>
-                <div className="text-2xl font-black text-[#072640]">4,680</div>
-                <div className="text-[11px] text-slate-500 mt-1">~3.3 стр. на визит</div>
+                <div className="text-2xl font-black text-[#072640]">
+                  {metrikaReport?.status === 'connected'
+                    ? metrikaReport.kpi.pageviews.toLocaleString('ru-RU')
+                    : metrikaReport?.status === 'pending_accumulation'
+                    ? '0'
+                    : '4,680'}
+                </div>
+                <div className="text-[11px] text-slate-500 mt-1">
+                  {metrikaReport?.status === 'connected' && metrikaReport.kpi.visits > 0
+                    ? `~${(metrikaReport.kpi.pageviews / metrikaReport.kpi.visits).toFixed(1)} стр. на визит`
+                    : '~3.3 стр. на визит'}
+                </div>
               </div>
 
               <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs hover:border-[#0b3d66] transition-all">
@@ -339,7 +574,13 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                   <span className="text-xs font-bold uppercase tracking-wider">Ср. время</span>
                   <Clock className="w-4 h-4 text-amber-600" />
                 </div>
-                <div className="text-2xl font-black text-[#072640]">3 мин 42 с</div>
+                <div className="text-2xl font-black text-[#072640]">
+                  {metrikaReport?.status === 'connected'
+                    ? formatDuration(metrikaReport.kpi.avgDurationSec)
+                    : metrikaReport?.status === 'pending_accumulation'
+                    ? '0 с'
+                    : '3 мин 42 с'}
+                </div>
                 <div className="text-[11px] text-emerald-600 font-bold mt-1">Высокая вовлеченность</div>
               </div>
 
@@ -348,17 +589,25 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                   <span className="text-xs font-bold uppercase tracking-wider">Отказы</span>
                   <TrendingUp className="w-4 h-4 text-emerald-600" />
                 </div>
-                <div className="text-2xl font-black text-emerald-600">12.8%</div>
+                <div className="text-2xl font-black text-emerald-600">
+                  {metrikaReport?.status === 'connected'
+                    ? `${metrikaReport.kpi.bounceRatePct}%`
+                    : metrikaReport?.status === 'pending_accumulation'
+                    ? '0.0%'
+                    : '12.8%'}
+                </div>
                 <div className="text-[11px] text-slate-500 mt-1">Отличный показатель в B2B</div>
               </div>
 
               <div className="bg-gradient-to-br from-[#0b3d66] to-[#072640] p-4 rounded-2xl text-white shadow-md">
                 <div className="flex items-center justify-between text-slate-300 mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#e6a417]">Конверсия (CR)</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#e6a417]">Заявки CRM</span>
                   <Zap className="w-4 h-4 text-[#e6a417] fill-current" />
                 </div>
-                <div className="text-2xl font-black text-white">4.8%</div>
-                <div className="text-[11px] text-[#e6a417] font-bold mt-1">68 обращений и КП</div>
+                <div className="text-2xl font-black text-white">{leads.length} шт.</div>
+                <div className="text-[11px] text-[#e6a417] font-bold mt-1">
+                  Лидов зафиксировано в CRM
+                </div>
               </div>
             </div>
 
@@ -621,7 +870,7 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {SEO_PAGE_POPULARITY.map((p, idx) => (
+                      {activePages.map((p, idx) => (
                         <tr key={idx} className="hover:bg-slate-50">
                           <td className="py-2.5 px-3">
                             <button
@@ -666,7 +915,7 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {SEO_GEO_REGIONS.map((g, idx) => (
+                      {activeGeography.map((g, idx) => (
                         <tr key={idx} className="hover:bg-slate-50">
                           <td className="py-2.5 px-3 font-semibold text-slate-800">{g.region}</td>
                           <td className="py-2.5 px-2 text-slate-500">{g.country}</td>
@@ -959,6 +1208,123 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                     <span className="text-slate-400 block text-[11px]">Права доступа</span>
                     <strong className="text-slate-800 text-sm">Полный доступ (Администратор CRM)</strong>
                   </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                  <h3 className="text-sm font-bold text-[#072640] flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-[#e6a417]" />
+                    <span>Интеграция с Яндекс.Метрикой и Директ</span>
+                  </h3>
+                  <span className="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-300 w-fit">
+                    Счётчик № {YANDEX_METRIKA_COUNTER_ID} активен на сайте
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                  Счётчик внедрён во все страницы сайта <strong>hubeienergy.ru</strong>. Поддерживается трекинг SPA-переходов, вебвизор 2.0, карта кликов и цели конверсий (<code>lead_quote_request</code>, <code>lead_tz_submit</code>, <code>lead_tz_copy</code>, <code>phone_click</code>, <code>email_click</code>).
+                </p>
+
+                {/* Direct quick links */}
+                <div className="flex flex-wrap gap-2.5 mb-5">
+                  <a
+                    href={`https://metrika.yandex.ru/dashboard?id=${YANDEX_METRIKA_COUNTER_ID}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 bg-[#0b3d66] hover:bg-navy-dark text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs"
+                  >
+                    <span>Открыть панель Яндекс.Метрики (№ {YANDEX_METRIKA_COUNTER_ID})</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <a
+                    href="https://direct.yandex.ru/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200"
+                  >
+                    <span>Яндекс.Директ (Кампании)</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+
+                {/* OAuth Token Config Form */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <Key className="w-3.5 h-3.5 text-amber-600" />
+                      OAuth-токен доступа к Reporting API:
+                    </span>
+                    {oauthToken ? (
+                      <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                        <Check className="w-3 h-3" />
+                        Токен установлен
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-amber-600 font-bold">
+                        Не настроен
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="relative flex-1">
+                      <input
+                        type={showSecretToken ? 'text' : 'password'}
+                        placeholder={oauthToken ? '••••••••••••••••••••••••••••••••••••' : 'Вставьте токен y0_...'}
+                        value={tokenInput}
+                        onChange={(e) => setTokenInput(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-[#0b3d66] font-mono pr-9"
+                      />
+                      {tokenInput && (
+                        <button
+                          type="button"
+                          onClick={() => setShowSecretToken(!showSecretToken)}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                        >
+                          {showSecretToken ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSaveToken(tokenInput)}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
+                    >
+                      Сохранить токен
+                    </button>
+
+                    {oauthToken && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveToken}
+                        className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
+                      >
+                        Отключить
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-1">
+                    <span>Как получить токен: перейдите по</span>
+                    <a
+                      href={yandexMetrikaApi.getOAuthAuthorizeUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#0b3d66] font-bold hover:underline inline-flex items-center gap-0.5"
+                    >
+                      официальной ссылке авторизации Яндекса
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                    <span>и скопируйте предоставленный код.</span>
+                  </div>
+
+                  {tokenSaveNotice && (
+                    <div className="p-2.5 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">
+                      {tokenSaveNotice}
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Cpu, Sliders, ShieldCheck, FileText, Send, Copy, CheckSquare, Zap, Layers, Activity, Truck, Settings } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { crmService } from '../services/crmService';
+import { trackMetrikaGoal } from '../services/yandexMetrika';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -199,6 +200,11 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
         status: 'new',
         source: 'configurator_tz',
       });
+      trackMetrikaGoal('lead_tz_submit', {
+        power: effectivePower,
+        voltageHV,
+        voltageLV,
+      });
     } catch {
       // safe fallback
     }
@@ -223,6 +229,11 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
         comment: `Схема: ${phaseVector}, Uk=${uk}, Регулирование=${regulation}. ${comments || ''}`,
         status: 'new',
         source: 'configurator_tz',
+      });
+      trackMetrikaGoal('lead_tz_copy', {
+        power: effectivePower,
+        voltageHV,
+        voltageLV,
       });
       await navigator.clipboard.writeText(getTzSummary());
       setCopied(true);

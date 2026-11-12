@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Mail, Phone, CheckCircle, Copy, Send } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { crmService } from '../services/crmService';
+import { trackMetrikaGoal } from '../services/yandexMetrika';
 
 interface Props {
   isOpen: boolean;
@@ -126,6 +127,12 @@ export const RequestQuoteModal: React.FC<Props> = ({
       setConsentError(true);
       return;
     }
+    trackMetrikaGoal('lead_quote_request', {
+      categorySlug,
+      power,
+      company: company || undefined,
+      method: 'mailto',
+    });
   };
 
   const handleCopyText = async () => {
@@ -136,6 +143,10 @@ export const RequestQuoteModal: React.FC<Props> = ({
     try {
       await navigator.clipboard.writeText(generateEmailBodyText());
       setIsCopied(true);
+      trackMetrikaGoal('lead_quote_copy', {
+        categorySlug,
+        power,
+      });
       setTimeout(() => setIsCopied(false), 3000);
     } catch {
       // Fallback
@@ -161,6 +172,12 @@ export const RequestQuoteModal: React.FC<Props> = ({
         comment,
         status: 'new',
         source: 'catalog_card',
+      });
+      trackMetrikaGoal('lead_quote_request', {
+        categorySlug,
+        power,
+        company: company || undefined,
+        method: 'form_submit',
       });
     } catch {
       // safe fallback
