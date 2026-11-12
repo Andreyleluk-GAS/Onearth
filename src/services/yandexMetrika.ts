@@ -1,4 +1,6 @@
 // Yandex.Metrika Helper for SPA navigation and conversion goals
+import { telemetryService } from './telemetryService';
+
 export const YANDEX_METRIKA_COUNTER_ID = 114211100;
 
 declare global {
@@ -18,6 +20,10 @@ declare global {
 export const trackMetrikaHit = (path: string, title?: string): void => {
   if (typeof window === 'undefined') return;
   try {
+    // 1. Record in local live telemetry engine
+    telemetryService.recordHit(path, title);
+
+    // 2. Transmit to official Yandex.Metrika
     const fullUrl = `${window.location.origin}${path.startsWith('/') ? path : `/${path}`}`;
     if (typeof window.ym === 'function') {
       window.ym(YANDEX_METRIKA_COUNTER_ID, 'hit', fullUrl, {
@@ -43,6 +49,10 @@ export const trackMetrikaHit = (path: string, title?: string): void => {
 export const trackMetrikaGoal = (goalName: string, params?: Record<string, any>): void => {
   if (typeof window === 'undefined') return;
   try {
+    // 1. Record in local live telemetry engine
+    telemetryService.recordGoal(goalName, params);
+
+    // 2. Transmit to official Yandex.Metrika
     if (typeof window.ym === 'function') {
       window.ym(YANDEX_METRIKA_COUNTER_ID, 'reachGoal', goalName, params);
       console.log(`[Yandex.Metrika] Goal '${goalName}' registered`, params);
