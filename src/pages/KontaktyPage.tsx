@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send, Copy } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, Copy, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { crmService } from '../services/crmService';
+import { trackMetrikaGoal } from '../services/yandexMetrika';
 
 interface Props {
   onOpenQuoteModal: () => void;
@@ -16,6 +18,8 @@ export const KontaktyPage: React.FC<Props> = () => {
   const [consentGiven, setConsentGiven] = useState(false);
   const [consentError, setConsentError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedLeadId, setSubmittedLeadId] = useState('');
 
   const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
   const privacyUrl = `${BASE}/politika-konfidencialnosti`;
@@ -61,12 +65,51 @@ export const KontaktyPage: React.FC<Props> = () => {
       : `Запрос оборудования — ${formCompany || 'Трансформаторы'}`
   )}&body=${encodeURIComponent(getEmailText())}`;
 
-  const handleSendEmail = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleSubmitContact = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!consentGiven) {
-      e.preventDefault();
       setConsentError(true);
       return;
     }
+    if (!formPhone.trim() && !formEmail.trim()) {
+      alert(
+        language === 'zh'
+          ? '请提供联系电话或电子邮箱以便我们与您联系。'
+          : language === 'en'
+          ? 'Please provide a phone number or email address.'
+          : 'Пожалуйста, укажите контактный телефон или email для связи.'
+      );
+      return;
+    }
+
+    try {
+      const newLead = crmService.addLead({
+        companyName: formCompany.trim() || 'Без названия',
+        contactName: formName.trim() || 'Контактное лицо',
+        phone: formPhone.trim() || 'Не указан',
+        email: formEmail.trim() || 'Не указан',
+        categoryTitle: 'Запрос коммерческого предложения (Контакты)',
+        categorySlug: 'kontakty',
+        powerKva: 'По согласованию',
+        comment: formComment.trim(),
+        status: 'new',
+        source: 'header_rfq',
+      });
+      if (newLead && newLead.id) {
+        setSubmittedLeadId(newLead.id);
+      }
+      trackMetrikaGoal('lead_quote_request', {
+        source: 'contacts_page',
+        company: formCompany || undefined,
+        method: 'crm_direct_submit',
+      });
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('crm-lead-added'));
+      }
+    } catch {
+      // safe fallback
+    }
+    setIsSubmitted(true);
   };
 
   const handleCopy = async () => {
@@ -191,162 +234,214 @@ export const KontaktyPage: React.FC<Props> = () => {
 
           {/* Direct Inquiry Form */}
           <div className="lg:col-span-7 bg-white rounded-3xl border border-surface-border p-8 shadow-sm space-y-6">
-            <div>
-              <h3 className="text-xl font-black text-navy">
-                {t.kontakty.formTitle}
-              </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                {t.kontakty.formSub}
-              </p>
-            </div>
-
-            <div className="space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {!isSubmitted ? (
+              <>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {t.kontakty.companyField}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder={language === 'zh' ? '某某电力工程有限公司' : language === 'en' ? 'Industrial / Engineering Co.' : 'ООО / АО / Проектная организация'}
-                    value={formCompany}
-                    onChange={(e) => setFormCompany(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {t.kontakty.nameField}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder={language === 'zh' ? '联系人姓名 / 职务' : language === 'en' ? 'Full name / Title' : 'ФИО / должность'}
-                    value={formName}
-                    onChange={(e) => setFormName(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {t.kontakty.phoneField}
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="+7 (___) ___-__-__"
-                    value={formPhone}
-                    onChange={(e) => setFormPhone(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {t.kontakty.emailField}
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="mail@company.com"
-                    value={formEmail}
-                    onChange={(e) => setFormEmail(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  {t.kontakty.commentField}
-                </label>
-                <textarea
-                  rows={4}
-                  placeholder={
-                    language === 'zh'
-                      ? '请填写额定容量（kVA）、高低压电压（10/20/35 kV）、损耗参数、外壳防护要求以及所需台数'
-                      : language === 'en'
-                      ? 'Please specify rated capacity (kVA), voltage class (10/20/35 kV), loss preferences, enclosure rating, and required quantity'
-                      : 'Укажите мощность (кВА), класс напряжения (10/20/35 кВ), требования к потерям, исполнение кожуха и необходимое количество штук'
-                  }
-                  value={formComment}
-                  onChange={(e) => setFormComment(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 focus:ring-2 focus:ring-navy focus:outline-none"
-                />
-              </div>
-
-              {/* Mandatory Consent Checkbox (152-FZ) */}
-              <div
-                className={`p-3.5 rounded-xl border transition-colors ${
-                  consentError ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'
-                }`}
-              >
-                <label className="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={consentGiven}
-                    onChange={(e) => {
-                      setConsentGiven(e.target.checked);
-                      if (e.target.checked) setConsentError(false);
-                    }}
-                    className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#0b3d66] focus:ring-[#0b3d66] cursor-pointer shrink-0"
-                  />
-                  <span className="leading-snug">
-                    {t.consent.checkboxText}{' '}
-                    <a
-                      href={privacyUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-[#0b3d66] font-bold underline hover:text-[#e6a417] transition-colors"
-                    >
-                      {t.consent.privacyLink}
-                    </a>
-                    {t.consent.suffix ? ` ${t.consent.suffix}` : ''}.
-                  </span>
-                </label>
-                {consentError && (
-                  <p className="text-[11px] text-red-600 font-semibold mt-1.5 flex items-center gap-1">
-                    <span>⚠</span> {t.consent.error}
+                  <h3 className="text-xl font-black text-navy">
+                    {t.kontakty.formTitle}
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {t.kontakty.formSub}
                   </p>
-                )}
-              </div>
+                </div>
 
-              <div className="pt-2 space-y-2">
-                <a
-                  href={mailtoLink}
-                  onClick={handleSendEmail}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-[#0b3d66] hover:bg-navy-dark text-white py-3 px-4 rounded-xl font-bold text-xs shadow-md transition-all active:scale-[0.99] cursor-pointer"
-                >
-                  <Send className="w-4 h-4 text-[#e6a417]" />
+                <div className="space-y-4 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">
+                        {t.kontakty.companyField}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder={language === 'zh' ? '某某电力工程有限公司' : language === 'en' ? 'Industrial / Engineering Co.' : 'ООО / АО / Проектная организация'}
+                        value={formCompany}
+                        onChange={(e) => setFormCompany(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">
+                        {t.kontakty.nameField}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder={language === 'zh' ? '联系人姓名 / 职务' : language === 'en' ? 'Full name / Title' : 'ФИО / должность'}
+                        value={formName}
+                        onChange={(e) => setFormName(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">
+                        {t.kontakty.phoneField}
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="+7 (___) ___-__-__"
+                        value={formPhone}
+                        onChange={(e) => setFormPhone(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">
+                        {t.kontakty.emailField}
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="mail@company.com"
+                        value={formEmail}
+                        onChange={(e) => setFormEmail(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium focus:ring-2 focus:ring-navy focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1">
+                      {t.kontakty.commentField}
+                    </label>
+                    <textarea
+                      rows={4}
+                      placeholder={
+                        language === 'zh'
+                          ? '请填写额定容量（kVA）、高低压电压（10/20/35 kV）、损耗参数、外壳防护要求以及所需台数'
+                          : language === 'en'
+                          ? 'Please specify rated capacity (kVA), voltage class (10/20/35 kV), loss preferences, enclosure rating, and required quantity'
+                          : 'Укажите мощность (кВА), класс напряжения (10/20/35 кВ), требования к потерям, исполнение кожуха и необходимое количество штук'
+                      }
+                      value={formComment}
+                      onChange={(e) => setFormComment(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 focus:ring-2 focus:ring-navy focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Mandatory Consent Checkbox (152-FZ) */}
+                  <div
+                    className={`p-3.5 rounded-xl border transition-colors ${
+                      consentError ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    <label className="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={consentGiven}
+                        onChange={(e) => {
+                          setConsentGiven(e.target.checked);
+                          if (e.target.checked) setConsentError(false);
+                        }}
+                        className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#0b3d66] focus:ring-[#0b3d66] cursor-pointer shrink-0"
+                      />
+                      <span className="leading-snug">
+                        {t.consent.checkboxText}{' '}
+                        <a
+                          href={privacyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-[#0b3d66] font-bold underline hover:text-[#e6a417] transition-colors"
+                        >
+                          {t.consent.privacyLink}
+                        </a>
+                        {t.consent.suffix ? ` ${t.consent.suffix}` : ''}.
+                      </span>
+                    </label>
+                    {consentError && (
+                      <p className="text-[11px] text-red-600 font-semibold mt-1.5 flex items-center gap-1">
+                        <span>⚠</span> {t.consent.error}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="pt-2 space-y-2.5">
+                    <button
+                      type="button"
+                      onClick={handleSubmitContact}
+                      className="w-full inline-flex items-center justify-center gap-2 bg-[#0b3d66] hover:bg-navy-dark text-white py-3.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md transition-all active:scale-[0.99] cursor-pointer"
+                    >
+                      <Send className="w-4 h-4 text-[#e6a417]" />
+                      {t.kontakty.sendEmailBtn}
+                    </button>
+
+                    <p className="text-[11px] text-slate-500 text-center font-medium">
+                      {language === 'zh'
+                        ? '需求将自动录入 CRM 系统并由外贸工程部跟进处理。'
+                        : language === 'en'
+                        ? 'Your inquiry will be automatically registered in our CRM system.'
+                        : 'Заявка будет автоматически зарегистрирована в CRM-системе.'}
+                    </p>
+
+                    <div className="flex gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleCopy}
+                        className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        {copied ? t.kontakty.copiedBtn : t.kontakty.copyBtn}
+                      </button>
+
+                      <a
+                        href="tel:+73431234567"
+                        className="bg-[#fff7e6] hover:bg-[#ffeed1] text-[#935d03] px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-[#e6a417]" />
+                        {t.nav.callUs}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-8 space-y-4">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
+                  <CheckCircle className="w-8 h-8" />
+                </div>
+
+                <div>
+                  <span className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-bold font-mono mb-2">
+                    {submittedLeadId ? `Заявка зарегистрирована в CRM: #${submittedLeadId}` : 'Заявка зарегистрирована в CRM'}
+                  </span>
+                  <h3 className="text-2xl font-black text-navy">
+                    {language === 'zh'
+                      ? '采购需求已成功提交！'
+                      : language === 'en'
+                      ? 'Inquiry Submitted Successfully!'
+                      : 'Заявка успешно отправлена!'}
+                  </h3>
+                </div>
+
+                <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
                   {language === 'zh'
-                    ? '在邮件客户端中打开 (mail@mail.ru)'
+                    ? '您的需求已录入 CRM 系统并分配给外贸工程部。我司工程师将尽快审核参数并与您对接正式商务报价。'
                     : language === 'en'
-                    ? 'Open Prepared Message in Email Client (mail@mail.ru)'
-                    : 'Открыть письмо в почтовом клиенте (mail@mail.ru)'}
-                </a>
+                    ? 'Your inquiry has been registered in our CRM system. Our engineering team will review the parameters and contact you shortly.'
+                    : 'Ваша заявка принята и зарегистрирована в CRM-системе. Инженеры Hubei Onearth Trading свяжутся с вами в ближайшее время для уточнения технического задания и предоставления расчёта.'}
+                </p>
 
-                <div className="flex gap-2">
+                <div className="pt-4 max-w-xs mx-auto">
                   <button
                     type="button"
-                    onClick={handleCopy}
-                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    onClick={() => {
+                      setIsSubmitted(false);
+                      setFormCompany('');
+                      setFormName('');
+                      setFormPhone('');
+                      setFormEmail('');
+                      setFormComment('');
+                    }}
+                    className="w-full bg-[#0b3d66] hover:bg-navy-dark text-white py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md"
                   >
-                    <Copy className="w-3.5 h-3.5" />
-                    {copied ? t.kontakty.copiedBtn : t.kontakty.copyBtn}
+                    {language === 'zh' ? '提交另一条需求' : language === 'en' ? 'Submit Another Inquiry' : 'Отправить ещё одну заявку'}
                   </button>
-
-                  <a
-                    href="tel:+73431234567"
-                    className="bg-[#fff7e6] hover:bg-[#ffeed1] text-[#935d03] px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5"
-                  >
-                    <Phone className="w-3.5 h-3.5 text-[#e6a417]" />
-                    {t.nav.callUs}
-                  </a>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

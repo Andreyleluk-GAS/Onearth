@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, Sliders, ShieldCheck, FileText, Send, Copy, CheckSquare, Zap, Layers, Activity, Truck, Settings } from 'lucide-react';
+import { Cpu, Sliders, ShieldCheck, FileText, Send, Copy, CheckSquare, Zap, Layers, Activity, Truck, Settings, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { crmService } from '../services/crmService';
 import { trackMetrikaGoal } from '../services/yandexMetrika';
@@ -54,6 +54,14 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
   const [consentGiven, setConsentGiven] = useState(false);
   const [consentError, setConsentError] = useState(false);
   const [copied, setCopied] = useState(false);
+  
+  // Contact info & Submission state
+  const [tzCompany, setTzCompany] = useState('');
+  const [tzContact, setTzContact] = useState('');
+  const [tzPhone, setTzPhone] = useState('');
+  const [tzEmail, setTzEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedLeadId, setSubmittedLeadId] = useState('');
 
   const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
   const privacyUrl = `${BASE}/politika-konfidencialnosti`;
@@ -179,35 +187,67 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
       : `Запрос ТЗ на трансформатор: ${effectivePower} — ${voltageHV}/${voltageLV}`
   )}&body=${encodeURIComponent(getTzSummary())}`;
 
-  const handleSendEmail = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleSubmitTz = () => {
     if (!consentGiven) {
-      e.preventDefault();
       setConsentError(true);
       return;
     }
+    if (!tzPhone.trim() && !tzEmail.trim()) {
+      alert(
+        language === 'zh'
+          ? '请提供联系电话或电子邮箱，以便外贸工程师向您发送技术方案和报价。'
+          : language === 'en'
+          ? 'Please provide a phone number or email address to receive quotation.'
+          : 'Пожалуйста, укажите контактный телефон или email для направления расчёта.'
+      );
+      return;
+    }
+
+    const checkedList: string[] = [];
+    if (options.enclosureNeeded) checkedList.push(t.poTz.optEnclosure);
+    if (options.tempControl) checkedList.push(t.poTz.optTempControl);
+    if (options.rs485) checkedList.push(t.poTz.optRs485);
+    if (options.afFans) checkedList.push(t.poTz.optAfFans);
+    if (options.vibration) checkedList.push(t.poTz.optVibration);
+    if (options.currentTrans) checkedList.push(t.poTz.optCurrentTrans);
+    if (options.oemBrand) checkedList.push(t.poTz.optOemBrand);
+    if (options.seismic9) checkedList.push(t.poTz.optSeismic9);
+    if (options.outdoorU1) checkedList.push(t.poTz.optOutdoorU1);
+    if (options.testReports) checkedList.push(t.poTz.optTestReports);
+    if (options.ruPassport) checkedList.push(t.poTz.optRuPassport);
+    if (options.dimensionsLimit) checkedList.push(t.poTz.optDimensionsLimit);
+
     try {
-      crmService.addLead({
-        companyName: 'Заказчик по ТЗ (Конфигуратор)',
-        contactName: 'Снабжение / Главный энергетик',
-        phone: 'В письме / Запрос КП',
-        email: 'mail@mail.ru',
+      const newLead = crmService.addLead({
+        companyName: tzCompany.trim() || 'Заказчик по ТЗ',
+        contactName: tzContact.trim() || 'Инженер / Снабжение',
+        phone: tzPhone.trim() || 'Не указан',
+        email: tzEmail.trim() || 'Не указан',
         categoryTitle: `Изготовление по ТЗ (${effectivePower}, ${voltageHV}/${voltageLV})`,
         categorySlug: 'po-tz',
         powerKva: effectivePower,
         voltageHV,
         voltageLV,
-        comment: `Схема: ${phaseVector}, Uk=${uk}, Регулирование=${regulation}, Охлаждение=${cooling}, Обмотки=${windings}. ${comments || ''}`,
+        comment: `Схема: ${phaseVector}, Uk=${uk}, Регулирование=${regulation}, Охлаждение=${cooling}, Обмотки=${getWindingsLabel()}, Потери=${getLossClassLabel()}, Изоляция=${insulationClass}, Кожух=${enclosure}, Установка=${installation}, Высота=${altitude}. Доп. опции: ${checkedList.join(', ') || 'нет'}. Примечания: ${comments || 'нет'}`,
         status: 'new',
         source: 'configurator_tz',
       });
+      if (newLead && newLead.id) {
+        setSubmittedLeadId(newLead.id);
+      }
       trackMetrikaGoal('lead_tz_submit', {
         power: effectivePower,
         voltageHV,
         voltageLV,
+        method: 'crm_direct_submit',
       });
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('crm-lead-added'));
+      }
     } catch {
       // safe fallback
     }
+    setIsSubmitted(true);
   };
 
   const handleCopy = async () => {
@@ -673,6 +713,81 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
             </div>
           </div>
 
+          {/* Block 4.5: Customer Contact Information for Direct CRM Calculation */}
+          <div className="space-y-3 pt-3 pb-1 border-t border-slate-200">
+            <div>
+              <span className="text-xs font-bold text-navy flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-[#e6a417]" />
+                {language === 'zh'
+                  ? '3. 询价联系人信息（用于接收技术商务方案与报价）：'
+                  : language === 'en'
+                  ? '3. Contact Details (to receive commercial quotation & technical datasheet):'
+                  : '3. Контактные данные заказчика (для направления расчёта стоимости):'}
+              </span>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                {language === 'zh'
+                  ? '填写后点击提交，需求将直达 CRM 系统，技术团队将及时与您对接。'
+                  : language === 'en'
+                  ? 'Inquiry will be submitted directly to our CRM system for immediate engineering review.'
+                  : 'Заявка будет зарегистрирована в CRM-системе для оперативного расчёта инженерами завода.'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  {language === 'zh' ? '企业 / 单位名称：' : language === 'en' ? 'Company / Organization:' : 'Организация / Компания:'}
+                </label>
+                <input
+                  type="text"
+                  placeholder={language === 'zh' ? '某某电力工程有限公司' : language === 'en' ? 'Industrial Corp' : 'ООО "ЭнергоСтрой"'}
+                  value={tzCompany}
+                  onChange={(e) => setTzCompany(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-[#0b3d66] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  {language === 'zh' ? '联系人姓名 / 职务：' : language === 'en' ? 'Contact Person / Title:' : 'Контактное лицо / Должность:'}
+                </label>
+                <input
+                  type="text"
+                  placeholder={language === 'zh' ? '张经理' : language === 'en' ? 'John Doe' : 'Главный энергетик'}
+                  value={tzContact}
+                  onChange={(e) => setTzContact(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-[#0b3d66] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  {language === 'zh' ? '联系电话：' : language === 'en' ? 'Phone Number:' : 'Телефон для связи:'}
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+7 (___) ___-__-__"
+                  value={tzPhone}
+                  onChange={(e) => setTzPhone(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-[#0b3d66] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  {language === 'zh' ? '电子邮箱：' : language === 'en' ? 'Email Address:' : 'Email для КП:'}
+                </label>
+                <input
+                  type="email"
+                  placeholder="name@company.com"
+                  value={tzEmail}
+                  onChange={(e) => setTzEmail(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-[#0b3d66] focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Block 5: Mandatory 152-FZ Consent Checkbox */}
           <div
             className={`p-3.5 rounded-xl border transition-colors ${
@@ -711,35 +826,69 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
           </div>
 
           {/* Block 6: Actions */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-              <a
-                href={mailtoLink}
-                onClick={handleSendEmail}
-                className="inline-flex items-center justify-center gap-2 bg-[#0b3d66] hover:bg-navy-dark text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 cursor-pointer"
-              >
-                <Send className="w-4 h-4 text-[#e6a417]" />
-                {t.poTz.sendEmailBtn}
-              </a>
+          {!isSubmitted ? (
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={handleSubmitTz}
+                  className="inline-flex items-center justify-center gap-2 bg-[#0b3d66] hover:bg-navy-dark text-white px-7 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 cursor-pointer"
+                >
+                  <Send className="w-4 h-4 text-[#e6a417]" />
+                  {t.poTz.sendEmailBtn}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-5 py-3.5 rounded-xl font-bold text-xs transition-colors cursor-pointer"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  {copied ? t.poTz.copiedBtn : t.poTz.copyBtn}
+                </button>
+              </div>
 
               <button
                 type="button"
-                onClick={handleCopy}
-                className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-5 py-3 rounded-xl font-bold text-xs transition-colors cursor-pointer"
+                onClick={() => onOpenQuoteModal()}
+                className="text-xs font-bold text-[#0b3d66] hover:text-[#e6a417] transition-colors cursor-pointer text-center sm:text-right"
               >
-                <Copy className="w-3.5 h-3.5" />
-                {copied ? t.poTz.copiedBtn : t.poTz.copyBtn}
+                Или заполнить краткую форму запроса на сайте →
               </button>
             </div>
-
-            <button
-              type="button"
-              onClick={() => onOpenQuoteModal()}
-              className="text-xs font-bold text-[#0b3d66] hover:text-[#e6a417] transition-colors cursor-pointer text-center sm:text-right"
-            >
-              Или заполнить краткую форму запроса на сайте →
-            </button>
-          </div>
+          ) : (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
+                <CheckCircle className="w-6 h-6" />
+              </div>
+              <span className="inline-block px-3 py-1 bg-white text-emerald-800 border border-emerald-300 rounded-full text-xs font-bold font-mono">
+                {submittedLeadId ? `Заявка по ТЗ зарегистрирована в CRM: #${submittedLeadId}` : 'Заявка по ТЗ зарегистрирована в CRM'}
+              </span>
+              <h4 className="text-xl font-black text-navy">
+                {language === 'zh'
+                  ? '技术协议已成功提交至 CRM 系统！'
+                  : language === 'en'
+                  ? 'Technical Specification Submitted to CRM!'
+                  : 'Спецификация по ТЗ успешно отправлена в CRM!'}
+              </h4>
+              <p className="text-xs text-slate-600 max-w-lg mx-auto leading-relaxed">
+                {language === 'zh'
+                  ? '您的技术参数已录入系统。工程技术部将为您对接对应中国变压器制造厂家并进行工艺和成本核算。'
+                  : language === 'en'
+                  ? 'Your technical parameters have been registered. Our engineering department will coordinate with Chinese transformer manufacturers and calculate factory pricing.'
+                  : 'Все 14 параметров и выбранные опции зафиксированы в CRM. Инженеры Hubei Onearth Trading свяжутся с вами для согласования чертежей и предоставления официального КП.'}
+              </p>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsSubmitted(false)}
+                  className="bg-[#0b3d66] hover:bg-navy-dark text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+                >
+                  {language === 'zh' ? '修改或重新提交' : language === 'en' ? 'Edit or Submit Another' : 'Редактировать параметры ТЗ'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

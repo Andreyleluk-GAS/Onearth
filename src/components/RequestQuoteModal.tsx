@@ -29,6 +29,7 @@ export const RequestQuoteModal: React.FC<Props> = ({
   const [consentError, setConsentError] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedLeadId, setSubmittedLeadId] = useState('');
 
   const BASE = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
   const privacyUrl = `${BASE}/politika-konfidencialnosti`;
@@ -159,26 +160,37 @@ export const RequestQuoteModal: React.FC<Props> = ({
       setConsentError(true);
       return;
     }
-    // Auto-record lead in CRM
+    if (!phone.trim() && !email.trim()) {
+      alert(language === 'zh' ? '请提供联系电话或电子邮箱以便我们与您联系。' : language === 'en' ? 'Please provide a phone number or email address.' : 'Пожалуйста, укажите контактный телефон или email для связи.');
+      return;
+    }
+    // Auto-record lead directly in CRM
     try {
-      crmService.addLead({
-        companyName: company || 'Без названия',
-        contactName: contactName || 'Контактное лицо',
-        phone,
-        email,
+      const newLead = crmService.addLead({
+        companyName: company.trim() || 'Без названия',
+        contactName: contactName.trim() || 'Контактное лицо',
+        phone: phone.trim() || 'Не указан',
+        email: email.trim() || 'Не указан',
         categoryTitle,
         categorySlug,
         powerKva: power,
-        comment,
+        comment: comment.trim(),
         status: 'new',
         source: 'catalog_card',
       });
+      if (newLead && newLead.id) {
+        setSubmittedLeadId(newLead.id);
+      }
       trackMetrikaGoal('lead_quote_request', {
         categorySlug,
         power,
         company: company || undefined,
-        method: 'form_submit',
+        method: 'crm_direct_submit',
       });
+      // Notify other tabs/windows if CRM is open
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('crm-lead-added'));
+      }
     } catch {
       // safe fallback
     }
@@ -373,57 +385,61 @@ export const RequestQuoteModal: React.FC<Props> = ({
 
               {/* Actions */}
               <div className="pt-2 flex flex-col sm:flex-row gap-2">
-                <a
-                  href={mailtoLink}
-                  onClick={handleSendEmail}
-                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 text-center"
+                <button
+                  type="submit"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#e6a417] hover:bg-[#d2930f] text-[#072640] py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 text-center cursor-pointer"
                 >
-                  <Mail className="w-4 h-4" />
+                  <Send className="w-4 h-4" />
                   {t.quoteModal.sendEmailBtn}
-                </a>
+                </button>
 
                 <button
                   type="button"
                   onClick={handleCopyText}
-                  className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 px-4 rounded-xl font-bold text-xs transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 px-4 rounded-xl font-bold text-xs transition-colors cursor-pointer"
                 >
                   <Copy className="w-4 h-4" />
                   {isCopied ? t.quoteModal.copiedBtn : t.quoteModal.copyBtn}
                 </button>
               </div>
 
-              <p className="text-[10px] text-slate-400 text-center pt-1">
+              <p className="text-[11px] text-slate-500 text-center pt-1 font-medium">
                 {t.quoteModal.directNotice}
               </p>
             </form>
           </div>
         ) : (
           <div className="text-center py-6 space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
               <CheckCircle className="w-8 h-8" />
             </div>
-            <h4 className="text-xl font-black text-navy">
-              {language === 'zh' ? '需求已成功生成！' : language === 'en' ? 'Inquiry Generated Successfully!' : 'Запрос успешно сформирован!'}
-            </h4>
-            <p className="text-xs text-slate-600 max-w-sm mx-auto">
+
+            <div>
+              <span className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-bold font-mono mb-2">
+                {submittedLeadId ? `Заявка зарегистрирована в CRM: #${submittedLeadId}` : 'Заявка зарегистрирована в CRM'}
+              </span>
+              <h4 className="text-xl sm:text-2xl font-black text-navy">
+                {language === 'zh'
+                  ? '采购需求已成功提交！'
+                  : language === 'en'
+                  ? 'Inquiry Submitted Successfully!'
+                  : 'Заявка успешно отправлена!'}
+              </h4>
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
               {language === 'zh'
-                ? '请点击下方按钮直接通过邮件发送至 mail@mail.ru，或复制文本发送至我司外贸部。'
+                ? '您的需求已成功录入 CRM 系统并分配给工程技术部。我司工程师将尽快审核参数并为您准备正式商务报价。'
                 : language === 'en'
-                ? 'Click below to send via your email client directly to mail@mail.ru, or copy the formatted text.'
-                : 'Нажмите кнопку ниже для отправки готового письма через почтовую программу на mail@mail.ru или скопируйте текст.'}
+                ? 'Your inquiry has been registered in our CRM system. Our engineering team will review the parameters and contact you shortly with an official quotation.'
+                : 'Ваша заявка принята и зарегистрирована в CRM-системе. Инженеры Hubei Onearth Trading свяжутся с вами в ближайшее время для уточнения технического задания и предоставления расчёта.'}
             </p>
-            <div className="flex flex-col gap-2 pt-2">
-              <a
-                href={mailtoLink}
-                className="w-full inline-flex items-center justify-center gap-2 bg-[#e6a417] text-[#072640] py-2.5 px-4 rounded-xl font-bold text-xs uppercase"
-              >
-                <Send className="w-4 h-4" />
-                {t.quoteModal.sendEmailBtn}
-              </a>
+
+            <div className="pt-2 flex flex-col gap-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="text-xs text-slate-400 hover:text-slate-600 py-1"
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#0b3d66] hover:bg-navy-dark text-white py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md"
               >
                 {t.quoteModal.close}
               </button>

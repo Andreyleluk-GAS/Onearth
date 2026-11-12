@@ -96,6 +96,27 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
     refreshAllAnalytics();
   }, [selectedPeriod]);
 
+  // Synchronize leads dynamically when switching tabs, returning to window, or receiving a submission
+  useEffect(() => {
+    const handleSyncLeads = () => {
+      setLeads(crmService.getLeads());
+    };
+    window.addEventListener('crm-lead-added', handleSyncLeads);
+    window.addEventListener('storage', handleSyncLeads);
+    window.addEventListener('focus', handleSyncLeads);
+    return () => {
+      window.removeEventListener('crm-lead-added', handleSyncLeads);
+      window.removeEventListener('storage', handleSyncLeads);
+      window.removeEventListener('focus', handleSyncLeads);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'leads') {
+      setLeads(crmService.getLeads());
+    }
+  }, [activeTab]);
+
   const handleSaveToken = (tokenToSave: string) => {
     if (!tokenToSave.trim()) return;
     yandexMetrikaApi.setOAuthToken(tokenToSave.trim());
