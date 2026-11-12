@@ -127,7 +127,7 @@ export const CategoryDetailPage: React.FC<Props> = ({
           <div className="lg:col-span-5 bg-[#f8fafc] rounded-2xl p-6 border border-slate-200 flex flex-col items-center justify-center relative">
             <img
               src={category.image}
-              alt={category.title}
+              alt={category.imageAlt || category.title}
               className="max-h-72 object-contain drop-shadow-md"
             />
             <div className="text-[11px] text-slate-500 mt-4 text-center">

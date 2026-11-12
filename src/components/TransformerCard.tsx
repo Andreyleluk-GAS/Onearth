@@ -87,7 +87,7 @@ export const TransformerCard: React.FC<Props> = ({
         {/* Transformer Image */}
         <img
           src={category.image}
-          alt={category.title}
+          alt={category.imageAlt || category.title}
           loading="lazy"
           className="max-h-44 object-contain transition-transform duration-300 group-hover:scale-105"
         />

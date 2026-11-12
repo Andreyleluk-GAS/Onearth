@@ -82,7 +82,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     regulationType: 'ПБВ ±2х2,5%',
     description: 'Трёхфазные сухие трансформаторы с литой изоляцией на класс напряжения 10 кВ с переключением ответвлений без возбуждения ПБВ ±2х2,5%. Доступны варианты напряжения короткого замыкания Uк = 6% и 8%.',
     tableType: 'dry_f_h',
-    image: getImg('suhie-litaya-10kv.webp'),
+    image: getImg('01-cast-resin-10kv.png'),
+    imageAlt: 'Сухой трансформатор с литой изоляцией 10 кВ ПБВ',
     standardEquipment: STANDARD_DRY_EQUIPMENT,
     options: AVAILABLE_DRY_OPTIONS,
     specs: [
@@ -117,7 +118,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     regulationType: 'ПБВ ±2х2,5%',
     description: 'Энергоэффективные трёхфазные сухие трансформаторы с литой изоляцией на класс напряжения 10 кВ со сверхнизкими потерями холостого хода (до 36% экономии энергии по сравнению со стандартными моделями).',
     tableType: 'dry_f_h',
-    image: getImg('suhie-litaya-10kv-pp.webp'),
+    image: getImg('02-cast-resin-10kv-low-loss.png'),
+    imageAlt: 'Сухой трансформатор с литой изоляцией 10 кВ ПБВ с пониженными потерями',
     standardEquipment: STANDARD_DRY_EQUIPMENT,
     options: AVAILABLE_DRY_OPTIONS,
     specs: [
@@ -148,7 +150,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     regulationType: 'ПБВ ±2х2,5%',
     description: 'Трёхфазные сухие трансформаторы с литой эпоксидной изоляцией на класс напряжения 20 кВ. Оптимальны для глубоких вводов распределительных сетей 20 кВ мегаполисов и крупных промышленных центров.',
     tableType: 'dry_f_h',
-    image: getImg('suhie-litaya-20kv.webp'),
+    image: getImg('03-cast-resin-20kv.png'),
+    imageAlt: 'Сухой трансформатор с литой изоляцией 20 кВ ПБВ',
     standardEquipment: STANDARD_DRY_EQUIPMENT,
     options: AVAILABLE_DRY_OPTIONS,
     specs: [
@@ -181,7 +184,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     regulationType: 'ПБВ ±2х2,5%',
     description: 'Высоковольтные сухие трансформаторы с литой изоляцией 35 кВ для понизительных подстанций, ветро- и солнечной генерации, объектов со строгими требованиями пожаро- и взрывобезопасности.',
     tableType: 'dry_f_h',
-    image: getImg('suhie-litaya-35kv.webp'),
+    image: getImg('04-cast-resin-35kv.png'),
+    imageAlt: 'Сухой трансформатор с литой изоляцией 35 кВ ПБВ',
     standardEquipment: STANDARD_DRY_EQUIPMENT,
     options: AVAILABLE_DRY_OPTIONS,
     specs: [
@@ -213,7 +217,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     regulationType: 'ПБВ ±2х2,5%',
     description: 'Энергосберегающая серия сухих трансформаторов 35 кВ со специальной геометрией шихтованного сердечника и сниженными потерями холостого хода для максимальной экономии электроэнергии.',
     tableType: 'dry_f_h',
-    image: getImg('suhie-litaya-35kv-pp.webp'),
+    image: getImg('05-cast-resin-35kv-low-loss.png'),
+    imageAlt: 'Сухой трансформатор с литой изоляцией 35 кВ ПБВ с пониженными потерями',
     standardEquipment: STANDARD_DRY_EQUIPMENT,
     options: AVAILABLE_DRY_OPTIONS,
     specs: [
@@ -248,7 +253,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     regulationType: 'ПБВ ±2х2,5%',
     description: 'Сухие трансформаторы с воздушно-барьерной изоляцией (Nomex) повышенного класса нагревостойкости H (180°C/145°C), с превосходной перегрузочной способностью и экологической безопасностью.',
     tableType: 'dry_h',
-    image: getImg('suhie-vozdushno-baryernaya-10kv.webp'),
+    image: getImg('06-air-barrier-h-class.png'),
+    imageAlt: 'Сухой трансформатор H-класс 10 кВ ПБВ',
     standardEquipment: STANDARD_DRY_EQUIPMENT,
     options: AVAILABLE_DRY_OPTIONS,
     specs: [
@@ -283,7 +289,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     regulationType: 'ПБВ ±2х2,5%',
     description: 'Трёхфазные масляные трансформаторы на класс напряжения 35 кВ с переключением ответвлений без возбуждения ПБВ ±2х2,5% мощностью 630–2500 кВА. Напряжение ВН: 35, 38,5 кВ; НН: 0,4 кВ. Схема соединения Д/Ун-11 или У/Ун-0.',
     tableType: 'oil',
-    image: getImg('tmg-series.webp'),
+    image: getImg('07-oil-35kv-pbv.png'),
+    imageAlt: 'Масляный трансформатор 35 кВ ПБВ',
     standardEquipment: STANDARD_OIL_EQUIPMENT,
     options: AVAILABLE_OIL_OPTIONS,
     specs: [
@@ -315,7 +322,8 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     description: 'Трёхфазные масляные трансформаторы на класс напряжения 35 кВ с регулированием напряжения под нагрузкой РПН ±4х2,5% мощностью 630–6300 кВА. Напряжения ВН 35, 38,5 кВ; НН 3,15, 6,3, 10,5 кВ (0,4 кВ по ТЗ). Схема и группа соединений У/Д-11.',
     applicationArea: 'Наружная установка, понизительные подстанции, распределительные сети и промышленные объекты. Конкретное исполнение, вводы, защита и комплектация согласовываются при подготовке предложения.',
     tableType: 'oil',
-    image: getImg('maslyanye-35kv.webp'),
+    image: getImg('08-oil-35kv-rpn.png'),
+    imageAlt: 'Масляный трансформатор 35 кВ РПН',
     standardEquipment: STANDARD_OIL_EQUIPMENT,
     options: AVAILABLE_OIL_OPTIONS,
     specs: [
@@ -355,6 +363,7 @@ export const TRANSFORMER_CATEGORIES: TransformerCategory[] = [
     description: 'Узкоспециализированное силовое оборудование для питания выпрямителей, электропечей, тяговых подстанций и солнечных инверторов. Производство по индивидуальным проектам и под собственной торговой маркой заказчика (OEM/Private Label).',
     tableType: 'special',
     image: getImg('tdns-series.webp'),
+    imageAlt: 'Трансформатор специального назначения для преобразователей и OEM',
     standardEquipment: STANDARD_SPECIAL_EQUIPMENT,
     options: AVAILABLE_SPECIAL_OPTIONS,
     specs: [

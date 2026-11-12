@@ -40,6 +40,7 @@ export interface TransformerCategory {
   standardEquipment: string[];
   options: string[];
   image: string;
+  imageAlt?: string;
 }
 
 export interface QuoteRequestData {
