@@ -3,6 +3,7 @@ import { ArrowRight, ShieldCheck, Factory, Settings, Truck, FileCheck2, Cpu, Zoo
 import { TransformerCard } from '../components/TransformerCard';
 import { LossCalculatorWidget } from '../components/LossCalculatorWidget';
 import { useLanguage } from '../i18n/LanguageContext';
+import { trackMetrikaGoal } from '../services/yandexMetrika';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -85,7 +86,10 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
 
                 {/* License Image with Zoom Hover Effect */}
                 <div
-                  onClick={() => setIsLicenseModalOpen(true)}
+                  onClick={() => {
+                    trackMetrikaGoal('license_zoom_view');
+                    setIsLicenseModalOpen(true);
+                  }}
                   className="relative overflow-hidden rounded-xl border border-white/20 shadow-inner cursor-pointer group/img bg-slate-900/60 transition-transform duration-300 active:scale-[0.98]"
                   title="Нажмите для просмотра в высоком разрешении"
                 >

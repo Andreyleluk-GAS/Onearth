@@ -12,12 +12,22 @@ Allow: /po-tz/
 Allow: /postavka/
 Allow: /kontakty/
 Allow: /politika-konfidencialnosti/
-Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid&_openstat
 Host: https://hubeienergy.ru
+
+User-agent: Googlebot
+Disallow: /*?*
+Disallow: /crm/
+Disallow: /admin/
+Allow: /
+Allow: /katalog/
+Allow: /po-tz/
+Allow: /postavka/
+Allow: /kontakty/
+Allow: /politika-konfidencialnosti/
 
 User-agent: *
 Disallow: /*?*
-Disallow: /*utm_*
 Disallow: /crm/
 Disallow: /admin/
 Allow: /

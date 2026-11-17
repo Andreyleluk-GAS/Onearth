@@ -1,5 +1,5 @@
 import React from 'react';
-import { Truck, FileCheck, Languages, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Truck, FileCheck, Languages, AlertCircle, CheckCircle2, ShieldCheck, Activity, Scale } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface Props {
@@ -231,6 +231,52 @@ export const PostavkaPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Deep Engineering & Logistics Guide */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="bg-white rounded-3xl border border-surface-border p-6 sm:p-10 shadow-sm space-y-6">
+          <div className="border-b border-slate-100 pb-4">
+            <span className="text-xs font-bold text-[#e6a417] uppercase tracking-wider bg-amber-50 px-3 py-1 rounded-md inline-block mb-2">
+              Инженерно-логистический регламент ВЭД
+            </span>
+            <h2 className="text-xl sm:text-2xl font-black text-navy">
+              Особенности логистики FCA Маньчжурия, негабаритные перевозки и приёмка оборудования
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs text-slate-700 leading-relaxed">
+            <div className="bg-[#f6f8fa] p-5 rounded-2xl border border-slate-200 space-y-3">
+              <div className="flex items-center gap-2 text-navy font-black text-sm">
+                <Truck className="w-5 h-5 text-[#0b3d66]" />
+                Консервация и негабарит
+              </div>
+              <p>
+                Поставка высоковольтных силовых трансформаторов напряжением 35 кВ (1600–6300 кВА) требует строгого контроля осевых нагрузок (вес активной части с маслом 15–28 тонн). Навесные узлы (вводы 35 кВ, радиаторы, расширители) демонтируются для соблюдения ж/д габарита и упаковываются в влагозащитные ящики с силикагелем.
+              </p>
+            </div>
+
+            <div className="bg-[#f6f8fa] p-5 rounded-2xl border border-slate-200 space-y-3">
+              <div className="flex items-center gap-2 text-navy font-black text-sm">
+                <Activity className="w-5 h-5 text-emerald-600" />
+                Датчики динамических ударов
+              </div>
+              <p>
+                На бак устанавливаются трехкоординатные электронные регистраторы ускорений (ShockLog / SpotSee), непрерывно фиксирующие толчки и вибрации по осям X, Y, Z во время маневровых работ и перегрузки. Показания датчиков вносятся в передаточный акт на станции Маньчжурия/Забайкальск.
+              </p>
+            </div>
+
+            <div className="bg-[#f6f8fa] p-5 rounded-2xl border border-slate-200 space-y-3">
+              <div className="flex items-center gap-2 text-navy font-black text-sm">
+                <ShieldCheck className="w-5 h-5 text-[#e6a417]" />
+                Таможенная очистка и стандарты
+              </div>
+              <p>
+                Оборудование сопровождается полным пакетом закрывающих документов: паспортом, протоколами заводских приёмо-сдаточных испытаний (FAT test report), сертификатами ТР ТС 004/2011, ТР ТС 020/2011 и соответствия ГОСТ 52719-2007 и МЭК 60076. Экспортная очистка КНР включена в базис FCA.
+              </p>
+            </div>
           </div>
         </div>
       </section>

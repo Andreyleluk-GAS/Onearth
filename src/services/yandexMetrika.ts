@@ -38,13 +38,7 @@ export const trackMetrikaHit = (path: string, title?: string): void => {
 };
 
 /**
- * Sends a conversion goal event to Yandex.Metrika
- * Goals supported:
- * - 'lead_quote_request': Sent when customer submits a quote modal
- * - 'lead_tz_submit': Sent when customer submits a custom TZ in configurator
- * - 'lead_tz_copy': Sent when customer copies the custom TZ summary
- * - 'phone_click': Sent when customer clicks the phone number link
- * - 'email_click': Sent when customer clicks email link
+ * Sends a conversion goal event to Yandex.Metrika with backward and forward compatibility
  */
 export const trackMetrikaGoal = (goalName: string, params?: Record<string, any>): void => {
   if (typeof window === 'undefined') return;
@@ -52,10 +46,30 @@ export const trackMetrikaGoal = (goalName: string, params?: Record<string, any>)
     // 1. Record in local live telemetry engine
     telemetryService.recordGoal(goalName, params);
 
+    // Goal alias mapping for comprehensive Yandex.Metrika goal coverage
+    const aliasMap: Record<string, string[]> = {
+      lead_quote_request: ['lead_quote_request', 'lead_form_quote_submit'],
+      lead_form_quote_submit: ['lead_form_quote_submit', 'lead_quote_request'],
+      lead_tz_submit: ['lead_tz_submit', 'tz_file_upload_submit'],
+      tz_file_upload_submit: ['tz_file_upload_submit', 'lead_tz_submit'],
+      email_click: ['email_click', 'contact_email_click'],
+      contact_email_click: ['contact_email_click', 'email_click'],
+      phone_click: ['phone_click', 'contact_phone_click'],
+      contact_phone_click: ['contact_phone_click', 'phone_click'],
+      license_zoom_view: ['license_zoom_view'],
+      oprosny_list_pdf_download: ['oprosny_list_pdf_download'],
+      postavka_page_deep_scroll: ['postavka_page_deep_scroll'],
+      catalog_filter_interaction: ['catalog_filter_interaction'],
+    };
+
+    const targetGoals = aliasMap[goalName] || [goalName];
+
     // 2. Transmit to official Yandex.Metrika
     if (typeof window.ym === 'function') {
-      window.ym(YANDEX_METRIKA_COUNTER_ID, 'reachGoal', goalName, params);
-      console.log(`[Yandex.Metrika] Goal '${goalName}' registered`, params);
+      targetGoals.forEach((target) => {
+        window.ym?.(YANDEX_METRIKA_COUNTER_ID, 'reachGoal', target, params);
+      });
+      console.log(`[Yandex.Metrika] Goals registered: ${targetGoals.join(', ')}`, params);
     }
   } catch (err) {
     console.debug('[Yandex.Metrika] Goal error:', err);
