@@ -74,11 +74,11 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
               <div className="relative group bg-gradient-to-b from-white/15 to-white/5 border border-white/20 hover:border-[#e6a417]/70 rounded-2xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-md transition-all duration-300 max-w-md w-full">
                 {/* Header badge inside card */}
                 <div className="flex items-center justify-between gap-2 mb-2.5 pb-2 border-b border-white/10 text-xs">
-                  <div className="flex items-center gap-2 text-[#e6a417] font-bold">
+                  <div className="flex items-center gap-1.5 text-[#e6a417] font-bold min-w-0">
                     <ShieldCheck className="w-4 h-4 shrink-0 text-[#e6a417]" />
-                    <span className="truncate">{t.hero.licenseBadge || 'Бизнес-лицензия КНР (营业执照)'}</span>
+                    <span className="text-[12px] truncate">{t.hero.licenseBadge || 'Бизнес-лицензия КНР (营业执照)'}</span>
                   </div>
-                  <span className="text-[10px] uppercase font-bold text-slate-300 bg-white/10 px-2 py-0.5 rounded tracking-wider shrink-0">
+                  <span className="text-[10px] uppercase font-bold text-slate-300 bg-white/10 px-2 py-0.5 rounded tracking-wider shrink-0 whitespace-nowrap">
                     {t.hero.licenseLegal || 'Регистрация КНР'}
                   </span>
                 </div>
