@@ -34,6 +34,10 @@ export const TRANSLATIONS = {
       statInsulationVal: 'Литая, Nomex, Масло',
       statReg: 'Регулирование:',
       statRegVal: 'ПБВ ±2х2,5% / РПН',
+      licenseBadge: 'Бизнес-лицензия КНР (营业执照)',
+      licenseSub: 'Hubei Onearth Trading Co., Ltd.',
+      licenseZoom: 'Нажмите для увеличения',
+      licenseLegal: 'Регистрация КНР',
     },
     features: {
       subtitle: 'Компетенции и формат работы',
@@ -361,6 +365,10 @@ export const TRANSLATIONS = {
       statInsulationVal: 'Cast Resin, Nomex, Oil',
       statReg: 'Tap Changer:',
       statRegVal: 'NLTC ±2×2.5% / OLTC',
+      licenseBadge: 'China Business License (营业执照)',
+      licenseSub: 'Hubei Onearth Trading Co., Ltd.',
+      licenseZoom: 'Click to enlarge',
+      licenseLegal: 'Official PRC Registration',
     },
     features: {
       subtitle: 'Engineering & Trade Capabilities',
@@ -688,6 +696,10 @@ export const TRANSLATIONS = {
       statInsulationVal: '环氧浇注、Nomex、油浸',
       statReg: '调压方式：',
       statRegVal: '无励磁 ±2×2.5% / 有载',
+      licenseBadge: '企业营业执照 (中华人民共和国)',
+      licenseSub: '湖北万域贸易有限公司',
+      licenseZoom: '点击查看大图',
+      licenseLegal: '市场监督管理局核发',
     },
     features: {
       subtitle: '核心服务与合作模式',
