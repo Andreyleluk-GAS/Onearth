@@ -179,7 +179,7 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
     ].filter(Boolean).join('\n');
   };
 
-  const mailtoLink = `mailto:mail@mail.ru?subject=${encodeURIComponent(
+  const mailtoLink = `mailto:info@hubeienergy.ru?subject=${encodeURIComponent(
     language === 'zh'
       ? `非标变压器技术协议询价: ${effectivePower} — ${voltageHV}/${voltageLV}`
       : language === 'en'
@@ -260,7 +260,7 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
         companyName: 'Заказчик по ТЗ (Копирование опросного листа)',
         contactName: 'Снабжение / Главный энергетик',
         phone: 'В опросном листе',
-        email: 'mail@mail.ru',
+        email: 'info@hubeienergy.ru',
         categoryTitle: `Изготовление по ТЗ (${effectivePower}, ${voltageHV}/${voltageLV})`,
         categorySlug: 'po-tz',
         powerKva: effectivePower,
@@ -905,17 +905,17 @@ export const PoTzPage: React.FC<Props> = ({ onOpenQuoteModal }) => {
                 : language === 'en'
                 ? 'Send your technical specification, single-line diagram, or drawings to our email '
                 : 'Направьте техническое задание, опросный лист, однолинейную схему или чертежи на электронную почту '}
-              <a href="mailto:mail@mail.ru" className="font-bold text-[#0b3d66] underline">
-                mail@mail.ru
+              <a href="mailto:info@hubeienergy.ru" className="font-bold text-[#0b3d66] underline">
+                info@hubeienergy.ru
               </a>
               .
             </p>
           </div>
           <a
-            href="mailto:mail@mail.ru"
+            href="mailto:info@hubeienergy.ru"
             className="bg-[#0b3d66] hover:bg-navy-dark text-white px-4 py-2 rounded-xl text-xs font-bold shrink-0 shadow-xs"
           >
-            mail@mail.ru
+            info@hubeienergy.ru
           </a>
         </div>
       </section>

@@ -171,12 +171,12 @@ const PAGES_TO_PRERENDER = [
   {
     route: '/kontakty/',
     title: 'Контакты — Hubei Onearth Trading Company Limited',
-    description: 'Контакты Hubei Onearth Trading Company Limited: телефон +7 (343) 123-45-67 и e-mail mail@mail.ru для запроса трансформаторов из Китая.',
+    description: 'Контакты Hubei Onearth Trading Company Limited: телефон +7 (343) 123-45-67 и e-mail info@hubeienergy.ru для запроса трансформаторов из Китая.',
     h1: 'Контакты',
     content: `
       <div class="max-w-7xl mx-auto px-4 py-8">
         <h1>Контакты</h1>
-        <p>Телефон: +7 (343) 123-45-67, E-mail: mail@mail.ru</p>
+        <p>Телефон: +7 (343) 123-45-67, E-mail: info@hubeienergy.ru</p>
       </div>
     `
   },
@@ -189,7 +189,7 @@ const PAGES_TO_PRERENDER = [
       <div class="max-w-7xl mx-auto px-4 py-8">
         <h1>Политика конфиденциальности</h1>
         <p>Настоящая Политика конфиденциальности определяет порядок сбора, обработки и защиты персональных данных пользователей в соответствии с Федеральным законом РФ № 152-ФЗ «О персональных данных».</p>
-        <p>Оператор персональных данных: Hubei Onearth Trading Company Limited. E-mail: mail@mail.ru</p>
+        <p>Оператор персональных данных: Hubei Onearth Trading Company Limited. E-mail: info@hubeienergy.ru</p>
       </div>
     `
   }

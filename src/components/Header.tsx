@@ -62,12 +62,12 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
               +7 (343) 123-45-67
             </a>
             <a
-              href="mailto:mail@mail.ru"
+              href="mailto:info@hubeienergy.ru"
               onClick={() => trackMetrikaGoal('email_click', { location: 'header' })}
               className="hidden sm:flex items-center gap-1.5 text-slate-200 hover:text-white transition-colors"
             >
               <Mail className="w-3.5 h-3.5 text-[#e6a417]" />
-              mail@mail.ru
+              info@hubeienergy.ru
             </a>
 
             {/* Top-Right Language Switcher */}

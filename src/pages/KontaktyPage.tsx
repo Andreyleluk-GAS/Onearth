@@ -57,7 +57,7 @@ export const KontaktyPage: React.FC<Props> = () => {
     ].join('\n');
   };
 
-  const mailtoLink = `mailto:mail@mail.ru?subject=${encodeURIComponent(
+  const mailtoLink = `mailto:info@hubeienergy.ru?subject=${encodeURIComponent(
     language === 'zh'
       ? `变压器采购咨询 — ${formCompany || '客户企业'}`
       : language === 'en'
@@ -193,10 +193,10 @@ export const KontaktyPage: React.FC<Props> = () => {
                 <div>
                   <span className="text-slate-400 block text-[11px]">{t.kontakty.directEmail}</span>
                   <a
-                    href="mailto:mail@mail.ru"
+                    href="mailto:info@hubeienergy.ru"
                     className="text-base font-bold text-navy hover:text-[#e6a417] transition-colors"
                   >
-                    mail@mail.ru
+                    info@hubeienergy.ru
                   </a>
                   <span className="text-[11px] text-slate-400 block mt-0.5">
                     {language === 'zh' ? '接收技术协议、选型询价单、单线图及 CAD 图纸' : language === 'en' ? 'For single-line diagrams, RFQs, datasheets, and blueprints' : 'Для опросных листов, ТЗ, схем и чертежей'}

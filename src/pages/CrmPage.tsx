@@ -1384,7 +1384,7 @@ export const CrmPage: React.FC<Props> = ({ onNavigate, onLogout }) => {
                 </p>
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs font-bold text-[#072640] inline-flex items-center gap-2">
                   <Mail className="w-4 h-4 text-[#e6a417]" />
-                  <span>mail@mail.ru</span>
+                  <span>info@hubeienergy.ru</span>
                 </div>
               </div>
 

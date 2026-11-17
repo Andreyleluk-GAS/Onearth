@@ -138,12 +138,12 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal, onOpenCr
               </a>
 
               <a
-                href="mailto:mail@mail.ru"
+                href="mailto:info@hubeienergy.ru"
                 onClick={() => trackMetrikaGoal('email_click', { location: 'footer' })}
                 className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors"
               >
                 <Mail className="w-4 h-4 text-[#e6a417]" />
-                mail@mail.ru
+                info@hubeienergy.ru
               </a>
 
               <div className="flex items-start gap-2 text-slate-300 pt-1">

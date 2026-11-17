@@ -190,15 +190,15 @@ export const PrivacyPolicyPage: React.FC<Props> = ({ onNavigate }) => {
                       ? '用户有权查阅、更正、要求删除其个人信息或撤回同意。请发送正式书面申请至官方外贸邮箱。'
                       : language === 'en'
                       ? 'Users have the right to access, rectify, or request deletion of their personal data by submitting a formal request to our official email.'
-                      : 'Субъект персональных данных вправе отозвать согласие или запросить уточнение/удаление данных, направив запрос на mail@mail.ru.'}
+                      : 'Субъект персональных данных вправе отозвать согласие или запросить уточнение/удаление данных, направив запрос на info@hubeienergy.ru.'}
                   </p>
                 </div>
                 <a
-                  href="mailto:mail@mail.ru?subject=Personal%20Data%20Request"
+                  href="mailto:info@hubeienergy.ru?subject=Personal%20Data%20Request"
                   className="inline-flex items-center gap-2 bg-[#0b3d66] hover:bg-navy-dark text-white px-4 py-2.5 rounded-xl font-bold text-xs shrink-0 shadow-sm transition-all active:scale-95 cursor-pointer"
                 >
                   <Mail className="w-4 h-4 text-[#e6a417]" />
-                  <span>mail@mail.ru</span>
+                  <span>info@hubeienergy.ru</span>
                 </a>
               </div>
             </div>

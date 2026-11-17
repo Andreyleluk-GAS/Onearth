@@ -120,7 +120,7 @@ export const RequestQuoteModal: React.FC<Props> = ({
     ].filter(Boolean).join('\n');
   };
 
-  const mailtoLink = `mailto:mail@mail.ru?subject=${generateEmailSubject()}&body=${encodeURIComponent(generateEmailBodyText())}`;
+  const mailtoLink = `mailto:info@hubeienergy.ru?subject=${generateEmailSubject()}&body=${encodeURIComponent(generateEmailBodyText())}`;
 
   const handleSendEmail = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!consentGiven) {

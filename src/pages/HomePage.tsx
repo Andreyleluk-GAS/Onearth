@@ -54,7 +54,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
               </button>
 
               <a
-                href="mailto:mail@mail.ru"
+                href="mailto:info@hubeienergy.ru"
                 className="text-xs text-slate-300 hover:text-white underline ml-2"
               >
                 {t.hero.sendQuestionnaire}

@@ -114,11 +114,11 @@ export const CategoryDetailPage: React.FC<Props> = ({
               </button>
 
               <a
-                href="mailto:mail@mail.ru"
+                href="mailto:info@hubeienergy.ru"
                 className="bg-[#fff7e6] hover:bg-[#ffeed1] text-[#935d03] border border-[#e6a417]/50 px-5 py-3 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors"
               >
                 <Mail className="w-4 h-4 text-[#e6a417]" />
-                mail@mail.ru
+                info@hubeienergy.ru
               </a>
             </div>
           </div>
@@ -347,10 +347,10 @@ export const CategoryDetailPage: React.FC<Props> = ({
             </h4>
             <p className="text-xs text-slate-700 max-w-2xl leading-relaxed">
               {language === 'zh'
-                ? '请将采购单、技术规格书或工程图纸发送至 mail@mail.ru — 我们将为您提供完备的工厂技术方案与 FCA (Free Carrier) 交付报价。'
+                ? '请将采购单、技术规格书或工程图纸发送至 info@hubeienergy.ru — 我们将为您提供完备的工厂技术方案与 FCA (Free Carrier) 交付报价。'
                 : language === 'en'
-                ? 'Send your questionnaire, technical assignment, or project parameters to mail@mail.ru — we will prepare a full commercial offer with technical documentation and FCA (Free Carrier) delivery calculation.'
-                : 'Отправьте опросный лист, техническое задание или параметры проекта на mail@mail.ru — подготовим коммерческое предложение с технической документацией и расчётом поставки на условиях FCA (Free Carrier).'}
+                ? 'Send your questionnaire, technical assignment, or project parameters to info@hubeienergy.ru — we will prepare a full commercial offer with technical documentation and FCA (Free Carrier) delivery calculation.'
+                : 'Отправьте опросный лист, техническое задание или параметры проекта на info@hubeienergy.ru — подготовим коммерческое предложение с технической документацией и расчётом поставки на условиях FCA (Free Carrier).'}
             </p>
           </div>
 

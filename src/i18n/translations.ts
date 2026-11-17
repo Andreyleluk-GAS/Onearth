@@ -16,7 +16,7 @@ export const TRANSLATIONS = {
       tagline: 'Трансформаторы из Китая',
       callUs: 'Позвонить',
       phone: '+7 (343) 123-45-67',
-      email: 'mail@mail.ru',
+      email: 'info@hubeienergy.ru',
     },
     hero: {
       badge: 'Базис поставки: FCA (Free Carrier), (Инкотермс 2020)',
@@ -25,7 +25,7 @@ export const TRANSLATIONS = {
         'Компания Hubei Onearth Trading Company Limited специализируется на подборе надёжных производителей силовых трансформаторов в Китае. Помогаем российским инжиниринговым и подрядным организациям, промышленным предприятиям и комплексным поставщикам получать сертифицированное оборудование 10, 20 и 35 кВ, обеспечивая прозрачные условия сотрудничества и выгодные коммерческие предложения.',
       ctaCatalog: 'Смотреть каталог',
       ctaCustom: 'Изготовление по ТЗ',
-      sendQuestionnaire: 'Отправить опросный лист на mail@mail.ru',
+      sendQuestionnaire: 'Отправить опросный лист на info@hubeienergy.ru',
       statPower: 'Диапазон мощности:',
       statPowerVal: '630 – 6300 кВА',
       statVoltage: 'Классы напряжения:',
@@ -104,7 +104,7 @@ export const TRANSLATIONS = {
     bottomCta: {
       badge: 'Готовы рассчитать параметры оборудования',
       title: 'Нужна консультация, подбор завода или расчёт стоимости?',
-      desc: 'Отправьте опросный лист, техническое задание или однолинейную схему на mail@mail.ru — подготовим технико-коммерческое предложение.',
+      desc: 'Отправьте опросный лист, техническое задание или однолинейную схему на info@hubeienergy.ru — подготовим технико-коммерческое предложение.',
       btn: 'Запросить расчёт КП',
     },
     catalogPage: {
@@ -309,7 +309,7 @@ export const TRANSLATIONS = {
       tocTitle: 'Разделы документа',
       backToHome: 'Вернуться на главную',
       securityNotice: 'Безопасность данных гарантируется техническими и организационными мерами в соответствии с 152-ФЗ.',
-      operatorInfo: 'Оператор персональных данных: Hubei Onearth Trading Company Limited. E-mail для обращений: mail@mail.ru',
+      operatorInfo: 'Оператор персональных данных: Hubei Onearth Trading Company Limited. E-mail для обращений: info@hubeienergy.ru',
     },
     mobileBar: {
       catalog: 'Каталог',
@@ -343,7 +343,7 @@ export const TRANSLATIONS = {
       tagline: 'Transformers from China',
       callUs: 'Call Us',
       phone: '+7 (343) 123-45-67',
-      email: 'mail@mail.ru',
+      email: 'info@hubeienergy.ru',
     },
     hero: {
       badge: 'Delivery Terms: FCA (Free Carrier) (Incoterms 2020)',
@@ -352,7 +352,7 @@ export const TRANSLATIONS = {
         'Hubei Onearth Trading Company Limited specializes in selecting reputable power transformer manufacturers in China. We help engineering and contracting organizations, industrial enterprises, and turnkey EPC suppliers procure certified 10, 20, and 35 kV equipment, ensuring transparent cooperation terms and competitive commercial proposals.',
       ctaCatalog: 'Explore Catalog',
       ctaCustom: 'Custom Order by TS',
-      sendQuestionnaire: 'Send inquiry / questionnaire to mail@mail.ru',
+      sendQuestionnaire: 'Send inquiry / questionnaire to info@hubeienergy.ru',
       statPower: 'Capacity Range:',
       statPowerVal: '630 – 6300 kVA',
       statVoltage: 'Voltage Classes:',
@@ -431,7 +431,7 @@ export const TRANSLATIONS = {
     bottomCta: {
       badge: 'Engineering Team Ready to Assist',
       title: 'Need Technical Advice, Factory Sourcing, or a Quotation?',
-      desc: 'Send your single-line diagram, technical specification, or equipment inquiry to mail@mail.ru — we will prepare an official commercial offer.',
+      desc: 'Send your single-line diagram, technical specification, or equipment inquiry to info@hubeienergy.ru — we will prepare an official commercial offer.',
       btn: 'Request Commercial Offer',
     },
     catalogPage: {
@@ -636,7 +636,7 @@ export const TRANSLATIONS = {
       tocTitle: 'Policy Sections',
       backToHome: 'Back to Homepage',
       securityNotice: 'Personal data security is safeguarded by strict organizational and technical measures.',
-      operatorInfo: 'Data Controller: Hubei Onearth Trading Company Limited. Inquiries: mail@mail.ru',
+      operatorInfo: 'Data Controller: Hubei Onearth Trading Company Limited. Inquiries: info@hubeienergy.ru',
     },
     mobileBar: {
       catalog: 'Catalog',
@@ -670,7 +670,7 @@ export const TRANSLATIONS = {
       tagline: '中国电力变压器出口',
       callUs: '电话咨询',
       phone: '+7 (343) 123-45-67',
-      email: 'mail@mail.ru',
+      email: 'info@hubeienergy.ru',
     },
     hero: {
       badge: '交货条款：FCA (Free Carrier) (Incoterms 2020)',
@@ -679,7 +679,7 @@ export const TRANSLATIONS = {
         '湖北万域贸易有限公司（Hubei Onearth Trading Company Limited）专业对接中国高等级电力变压器制造企业，助力工程总承包及安装单位、工矿企业和综合供货商直接采购具备完整认证的 10、20 及 35 kV 高压变电装备，提供透明规范的合作条款与极具竞争力的商务方案。',
       ctaCatalog: '浏览产品目录',
       ctaCustom: '技术协议定制',
-      sendQuestionnaire: '发送技术协议/选型单至 mail@mail.ru',
+      sendQuestionnaire: '发送技术协议/选型单至 info@hubeienergy.ru',
       statPower: '额定容量范围：',
       statPowerVal: '630 – 6300 kVA',
       statVoltage: '额定电压等级：',
@@ -758,7 +758,7 @@ export const TRANSLATIONS = {
     bottomCta: {
       badge: '技术方案与商务测算准备就绪',
       title: '需要技术咨询、工厂严选对接或商务报价？',
-      desc: '请将选型表、技术协议或单线图发送至 mail@mail.ru，外贸工程团队将在最短时间内出具正式技术商务方案。',
+      desc: '请将选型表、技术协议或单线图发送至 info@hubeienergy.ru，外贸工程团队将在最短时间内出具正式技术商务方案。',
       btn: '索取技术商务报价',
     },
     catalogPage: {
@@ -963,7 +963,7 @@ export const TRANSLATIONS = {
       tocTitle: '政策条款目录',
       backToHome: '返回网站首页',
       securityNotice: '我们通过行业领先的技术防范与严格制度保障用户信息安全。',
-      operatorInfo: '个人信息处理主体：湖北万域贸易有限公司（Hubei Onearth Trading Company Limited），联系邮箱：mail@mail.ru',
+      operatorInfo: '个人信息处理主体：湖北万域贸易有限公司（Hubei Onearth Trading Company Limited），联系邮箱：info@hubeienergy.ru',
     },
     mobileBar: {
       catalog: '目录',
