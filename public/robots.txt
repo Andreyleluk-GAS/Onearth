@@ -8,6 +8,7 @@ Disallow: /crm/
 Disallow: /admin/
 Allow: /
 Allow: /katalog/
+Allow: /calculator-tr/
 Allow: /po-tz/
 Allow: /postavka/
 Allow: /kontakty/
@@ -21,6 +22,7 @@ Disallow: /crm/
 Disallow: /admin/
 Allow: /
 Allow: /katalog/
+Allow: /calculator-tr/
 Allow: /po-tz/
 Allow: /postavka/
 Allow: /kontakty/

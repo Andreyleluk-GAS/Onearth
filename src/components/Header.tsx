@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, Mail, Menu, X, ChevronDown, ShieldCheck, Zap } from 'lucide-react';
+import { Phone, Mail, Menu, X, ChevronDown, ShieldCheck, Zap, ArrowRight, Sparkles } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useLanguage } from '../i18n/LanguageContext';
 import { trackMetrikaGoal } from '../services/yandexMetrika';
@@ -129,6 +129,27 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
                   {/* Mega-Dropdown Menu */}
                   {isCatalogDropdownOpen && (
                     <div className="absolute top-full left-0 w-[470px] max-h-[82vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-surface-border p-3.5 pt-2.5 z-50 animate-fadeIn">
+                      {/* Карточка перехода в Онлайн-расчет CAD в шапке выпадающего каталога */}
+                      <button
+                        type="button"
+                        onClick={() => handleNav('/calculator-tr')}
+                        className="w-full mb-2.5 p-3 bg-gradient-to-r from-[#072640] via-[#0b3d66] to-[#072640] hover:from-[#0b3d66] hover:to-[#072640] rounded-xl text-white flex items-center justify-between gap-3 text-left shadow-md border border-[#e6a417]/35 group/cad cursor-pointer transition-all"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-[#e6a417]/20 border border-[#e6a417]/35 flex items-center justify-center text-[#e6a417] shrink-0">
+                            <Sparkles className="w-4 h-4 text-[#e6a417]" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-black text-white flex items-center gap-1.5">
+                              <span>Онлайн-расчет CAD</span>
+                              <span className="text-[9px] bg-[#e6a417] text-[#072640] font-black px-1.5 py-0.5 rounded uppercase">DXF</span>
+                            </div>
+                            <div className="text-[11px] text-slate-200">САПР-чертеж по ГОСТ 2.301 и расчет активной части</div>
+                          </div>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-[#e6a417] group-hover/cad:translate-x-1 transition-transform shrink-0" />
+                      </button>
+
                       <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2.5 py-1.5 border-b border-slate-100 mb-1">
                         {t.nav.catalogDropdownHeader}
                       </div>
@@ -226,6 +247,17 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
                 </button>
                 {item.hasDropdown && (
                   <div className="pl-4 py-1 space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => handleNav('/calculator-tr')}
+                      className="w-full text-left py-2.5 px-3 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-[#072640] to-[#0b3d66] border border-[#e6a417]/35 flex items-center justify-between mb-1.5 shadow-sm"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-[#e6a417]" />
+                        <span>Онлайн-расчет CAD (чертеж DXF)</span>
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#e6a417]" />
+                    </button>
                     {categories.map((cat) => (
                       <button
                         key={cat.slug}

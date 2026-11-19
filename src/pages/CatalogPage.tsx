@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TransformerCard } from '../components/TransformerCard';
-import { Filter, Zap, SlidersHorizontal, RefreshCw, Cpu, Flame, Layers } from 'lucide-react';
+import { Filter, Zap, SlidersHorizontal, RefreshCw, Cpu, Flame, Layers, ArrowRight, Sparkles } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { TransformerCategory } from '../types/transformer';
 
@@ -67,19 +67,46 @@ export const CatalogPage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) =
 
   return (
     <div className="space-y-12">
-      {/* Page Header Banner */}
-      <section className="bg-[#0b3d66] text-white py-12 sm:py-16">
+      {/* Page Header Banner с прямоугольником перехода в Онлайн-расчет CAD */}
+      <section className="bg-gradient-to-r from-[#072640] via-[#0b3d66] to-[#0a355c] text-white py-10 sm:py-14 border-b border-blue-900/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="max-w-3xl">
-            <span className="text-xs font-bold text-[#e6a417] uppercase tracking-wider bg-white/10 px-3 py-1 rounded-md inline-block mb-3">
-              {t.catalogPage.badge}
-            </span>
-            <h1 className="text-3xl sm:text-4xl font-black text-white">
-              {t.catalogPage.title}
-            </h1>
-            <p className="text-sm sm:text-base text-slate-200 mt-3 leading-relaxed">
-              {t.catalogPage.desc}
-            </p>
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div className="max-w-2xl">
+              <span className="text-xs font-bold text-[#e6a417] uppercase tracking-wider bg-white/10 px-3 py-1 rounded-md inline-block mb-3">
+                {t.catalogPage.badge}
+              </span>
+              <h1 className="text-3xl sm:text-4xl font-black text-white">
+                {t.catalogPage.title}
+              </h1>
+              <p className="text-sm sm:text-base text-slate-200 mt-3 leading-relaxed">
+                {t.catalogPage.desc}
+              </p>
+            </div>
+
+            {/* Прямоугольник для перехода в раздел Онлайн-расчет CAD */}
+            <div className="w-full lg:w-auto shrink-0 bg-white/10 hover:bg-white/[0.14] border-2 border-[#e6a417] rounded-2xl p-5 sm:p-6 backdrop-blur-md transition-all shadow-2xl max-w-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="bg-[#e6a417] text-[#072640] text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider shadow-sm flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-[#072640]" />
+                  CAD / САПР ЕСКД
+                </span>
+                <span className="text-xs text-amber-200 font-bold">Параметрический расчет</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-white leading-snug mb-1.5">
+                Нужен расчет нетипового трансформатора или чертеж?
+              </h3>
+              <p className="text-xs text-slate-200 mb-4 leading-relaxed">
+                Инженерный онлайн-расчет габаритов, теплосъема радиаторов и выгрузка чертежа в DXF для AutoCAD / nanoCAD по ЕСКД за 2 секунды.
+              </p>
+              <button
+                type="button"
+                onClick={() => onNavigate('/calculator-tr')}
+                className="w-full px-5 py-2.5 bg-[#e6a417] hover:bg-[#d49512] text-[#072640] font-black rounded-xl text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>Перейти в Онлайн-расчет CAD</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
       </section>

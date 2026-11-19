@@ -76,6 +76,16 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal, onOpenCr
               <li>
                 <button
                   type="button"
+                  onClick={() => onNavigate('/calculator-tr')}
+                  className="hover:text-[#e6a417] text-amber-300 font-semibold transition-colors flex items-center gap-1.5"
+                >
+                  <span>Онлайн-расчет и DXF</span>
+                  <span className="text-[9px] bg-amber-500 text-slate-900 font-black px-1.5 py-0.5 rounded">CAD</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
                   onClick={() => onNavigate('/po-tz')}
                   className="hover:text-white transition-colors"
                 >

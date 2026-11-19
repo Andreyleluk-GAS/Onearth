@@ -22,6 +22,7 @@ Disallow: /crm/
 Disallow: /admin/
 Allow: /
 Allow: /katalog/
+Allow: /calculator-tr/
 Allow: /po-tz/
 Allow: /postavka/
 Allow: /kontakty/
@@ -35,6 +36,7 @@ Disallow: /crm/
 Disallow: /admin/
 Allow: /
 Allow: /katalog/
+Allow: /calculator-tr/
 Allow: /po-tz/
 Allow: /postavka/
 Allow: /kontakty/
@@ -64,6 +66,7 @@ const CANONICAL_URLS = [
   { loc: 'https://hubeienergy.ru/katalog/maslyanye-35kv/', priority: '0.9', changefreq: 'weekly' },
   { loc: 'https://hubeienergy.ru/katalog/maslyanye-35kv-pbv/', priority: '0.9', changefreq: 'weekly' },
   { loc: 'https://hubeienergy.ru/katalog/special-transformatory/', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://hubeienergy.ru/calculator-tr/', priority: '0.95', changefreq: 'weekly' },
   { loc: 'https://hubeienergy.ru/po-tz/', priority: '0.9', changefreq: 'monthly' },
   { loc: 'https://hubeienergy.ru/postavka/', priority: '0.9', changefreq: 'monthly' },
   { loc: 'https://hubeienergy.ru/kontakty/', priority: '0.8', changefreq: 'monthly' },

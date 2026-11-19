@@ -6,6 +6,7 @@ import { CrmLoginModal } from './components/CrmLoginModal';
 import { HomePage } from './pages/HomePage';
 import { CatalogPage } from './pages/CatalogPage';
 import { CategoryDetailPage } from './pages/CategoryDetailPage';
+import { CalculatorPage } from './pages/CalculatorPage';
 import { PoTzPage } from './pages/PoTzPage';
 import { PostavkaPage } from './pages/PostavkaPage';
 import { KontaktyPage } from './pages/KontaktyPage';
@@ -54,9 +55,14 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Track SPA pageviews in Yandex.Metrika
+  // Track SPA pageviews in Yandex.Metrika and handle 301-style redirects
   useEffect(() => {
     trackMetrikaHit(currentPath);
+
+    // Redirect legacy /kalkulyator to canonical /calculator-tr
+    if (currentPath === '/kalkulyator' || currentPath === '/kalkulyator.html') {
+      navigate('/calculator-tr');
+    }
   }, [currentPath]);
 
   const navigate = (path: string) => {
@@ -170,6 +176,18 @@ export const App: React.FC = () => {
     // 4. Custom Manufacturing (по ТЗ)
     if (cleanPath === '/po-tz' || cleanPath === '/po-tz.html') {
       return <PoTzPage onNavigate={navigate} onOpenQuoteModal={openQuoteModal} />;
+    }
+
+    // 4.1. Online Engineering Calculator & DXF (/calculator-tr)
+    if (
+      cleanPath === '/calculator-tr' ||
+      cleanPath === '/calculator-tr.html' ||
+      cleanPath === '/kalkulyator' ||
+      cleanPath === '/kalkulyator.html' ||
+      cleanPath === '/raschet' ||
+      cleanPath === '/calculator'
+    ) {
+      return <CalculatorPage onNavigate={navigate} onOpenQuoteModal={openQuoteModal} />;
     }
 
     // 5. Delivery & Import (поставка)
