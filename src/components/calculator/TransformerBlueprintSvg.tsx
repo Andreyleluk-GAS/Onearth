@@ -1,9 +1,14 @@
-import React, { useState, useRef, useMemo } from 'react';
-import { ZoomIn, ZoomOut, Maximize2, Download, Layers, FileText, Loader2 } from 'lucide-react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { ZoomIn, ZoomOut, Maximize2, Download, Layers, FileText, Loader2, Box, X, CheckCircle2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { TransformerCalculationResult } from '../../services/transformerCalculator/types';
 import { generateDxfContent, downloadDxfFile } from '../../services/transformerCalculator/dxfGenerator';
 import { computeDraftingContext, SvgCadBuilder } from '../../services/transformerCalculator/cadDraftingEngine';
+import {
+  requestCadDrawing,
+  downloadCadExport,
+  CadBomItem,
+} from '../../services/transformerCalculator/cadEngineApi';
 
 interface Props {
   result: TransformerCalculationResult;
@@ -127,13 +132,102 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
   const handleMouseUp = () => setIsDragging(false);
 
   const [isDownloadingPdf, setIsDownloadingPdf] = useState<boolean>(false);
+  const [isDownloadingDxf, setIsDownloadingDxf] = useState<boolean>(false);
+  const [isDownloadingStep, setIsDownloadingStep] = useState<boolean>(false);
 
-  const handleDownloadDxf = () => {
+  // Состояние интеграции с параметрическим САПР-движком (OpenCASCADE Technology / B-Rep HLR)
+  const [cadSvg, setCadSvg] = useState<string | null>(null);
+  const [cadScaleText, setCadScaleText] = useState<string>('1:75');
+  const [cadBom, setCadBom] = useState<CadBomItem[]>([]);
+  const [cadParams, setCadParams] = useState<Record<string, any> | null>(null);
+  const [isCadLoading, setIsCadLoading] = useState<boolean>(true);
+  const [isCadServerOnline, setIsCadServerOnline] = useState<boolean>(false);
+  const [showBomModal, setShowBomModal] = useState<boolean>(false);
+
+  // Синхронизация параметров с САПР-движком
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    setIsCadLoading(true);
+
+    const timer = setTimeout(async () => {
+      try {
+        const data = await requestCadDrawing(result.input, { signal: controller.signal });
+        if (!isMounted) return;
+
+        // Нормализация SVG для адаптивного масштабирования в контейнере
+        const responsiveSvg = data.svg
+          .replace(/width="[^"]+"/, 'width="100%"')
+          .replace(/height="[^"]+"/, 'height="100%"');
+
+        setCadSvg(responsiveSvg);
+        setCadScaleText(data.scale_text || '1:75');
+        setCadBom(data.bom || []);
+        setCadParams(data.cad_params || null);
+        setIsCadServerOnline(true);
+      } catch (err: any) {
+        if (err.name === 'AbortError') return;
+        if (isMounted) {
+          setIsCadServerOnline(false);
+          // При недоступности сервера плавно используется встроенный SVG-генератор
+        }
+      } finally {
+        if (isMounted) {
+          setIsCadLoading(false);
+        }
+      }
+    }, 280);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [
+    result.input.powerKva,
+    result.input.voltageHvKv,
+    result.input.voltageMvKv,
+    result.input.voltageLvKv,
+    result.input.type,
+    result.input.windingConfig,
+    result.input.windingMaterial,
+    result.input.oilCoolingType,
+    result.input.dryCoolingType,
+    result.input.vectorGroup,
+    result.input.projectName,
+  ]);
+
+  const handleDownloadDxf = async () => {
+    if (isCadServerOnline && cadParams) {
+      setIsDownloadingDxf(true);
+      try {
+        await downloadCadExport('dxf', cadParams, 'gabaritny-chertezh.dxf');
+        setIsDownloadingDxf(false);
+        return;
+      } catch (err) {
+        console.warn('Falling back to client DXF generator', err);
+      } finally {
+        setIsDownloadingDxf(false);
+      }
+    }
     const dxfString = generateDxfContent(result);
     downloadDxfFile('gabaritny-chertezh.dxf', dxfString);
   };
 
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = async () => {
+    if (isCadServerOnline && cadParams) {
+      setIsDownloadingPdf(true);
+      try {
+        await downloadCadExport('pdf', cadParams, 'gabaritny-chertezh-a4.pdf');
+        setIsDownloadingPdf(false);
+        return;
+      } catch (err) {
+        console.warn('Falling back to client PDF generator', err);
+      } finally {
+        setIsDownloadingPdf(false);
+      }
+    }
+
     if (!containerRef.current || isDownloadingPdf) return;
     const svgElem = containerRef.current.querySelector('svg');
     if (!svgElem) {
@@ -203,6 +297,18 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
     }
   };
 
+  const handleDownloadStep = async () => {
+    if (!isCadServerOnline || !cadParams) return;
+    setIsDownloadingStep(true);
+    try {
+      await downloadCadExport('step', cadParams, 'model-transformer-3d.step');
+    } catch (err: any) {
+      alert(`Ошибка экспорта 3D STEP: ${err.message || err}`);
+    } finally {
+      setIsDownloadingStep(false);
+    }
+  };
+
   // Координаты основных видов
   const frontX0 = frontCenterX - sL / 2;
   const sideX0 = sideCenterX - sW / 2;
@@ -211,11 +317,29 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
     <div className="flex flex-col bg-white rounded-2xl border border-slate-300 shadow-md overflow-hidden">
       {/* Верхняя панель инструментов */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-100 border-b border-slate-200">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 uppercase tracking-wider bg-white px-2.5 py-1 rounded-md border border-slate-300 shadow-sm">
-            <Layers className="w-3.5 h-3.5 text-[#0b3d66]" />
-            Лист А4 (ГОСТ 2.301) — {gostScaleText}
-          </span>
+        <div className="flex flex-wrap items-center gap-2">
+          {isCadServerOnline ? (
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-900 border border-emerald-300 px-2.5 py-1 rounded-md shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
+              Ядро САПР: OpenCascade 3D (HLR) • М {cadScaleText}
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 uppercase tracking-wider bg-white px-2.5 py-1 rounded-md border border-slate-300 shadow-sm">
+              <Layers className="w-3.5 h-3.5 text-[#0b3d66]" />
+              Лист А4 (ГОСТ 2.301) — {gostScaleText}
+            </span>
+          )}
+
+          {cadBom.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowBomModal(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 px-2.5 py-1 rounded-md shadow-sm transition-colors cursor-pointer"
+            >
+              <FileText className="w-3.5 h-3.5 text-[#0b3d66]" />
+              <span>Спецификация ({cadBom.length} поз.)</span>
+            </button>
+          )}
 
           <div className="hidden sm:inline-flex bg-slate-200 p-0.5 rounded-lg text-xs font-semibold">
             <button
@@ -254,7 +378,7 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
             type="button"
             onClick={handleZoomIn}
             title="Приблизить"
-            className="p-1.5 text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-sm"
+            className="p-1.5 text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-sm cursor-pointer"
           >
             <ZoomIn className="w-4 h-4" />
           </button>
@@ -262,7 +386,7 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
             type="button"
             onClick={handleZoomOut}
             title="Отдалить"
-            className="p-1.5 text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-sm"
+            className="p-1.5 text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-sm cursor-pointer"
           >
             <ZoomOut className="w-4 h-4" />
           </button>
@@ -270,18 +394,36 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
             type="button"
             onClick={handleResetZoom}
             title="По размеру А4"
-            className="p-1.5 text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-sm"
+            className="p-1.5 text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-sm cursor-pointer"
           >
             <Maximize2 className="w-4 h-4" />
           </button>
 
           <div className="h-5 w-px bg-slate-300 mx-1" />
 
+          {/* 3D STEP AP214 */}
+          {isCadServerOnline && cadParams && (
+            <button
+              type="button"
+              onClick={handleDownloadStep}
+              disabled={isDownloadingStep}
+              title="Скачать точную 3D модель в формате STEP (ISO 10303-21 AP214) для CAD/BIM"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-[#072640] to-[#0b3d66] hover:from-[#0b3d66] hover:to-[#072640] border border-[#e6a417]/40 rounded-lg shadow-sm transition-all cursor-pointer"
+            >
+              {isDownloadingStep ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#e6a417]" />
+              ) : (
+                <Box className="w-3.5 h-3.5 text-[#e6a417]" />
+              )}
+              <span>3D STEP</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={handleDownloadPdf}
             disabled={isDownloadingPdf}
-            title="Скачать чертеж в PDF (1 страница, лист А4 ГОСТ 2.301-68)"
+            title="Скачать чертеж в PDF (1 страница, векторный лист А4 ГОСТ 2.301-68)"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-sm transition-colors cursor-pointer"
           >
             {isDownloadingPdf ? (
@@ -289,16 +431,22 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
             ) : (
               <FileText className="w-3.5 h-3.5 text-rose-600" />
             )}
-            <span>Скачать в PDF</span>
+            <span>Скачать PDF</span>
           </button>
 
           <button
             type="button"
             onClick={handleDownloadDxf}
+            disabled={isDownloadingDxf}
+            title="Скачать чертеж в векторный AutoCAD DXF со слоями ЕСКД"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-[#0b3d66] hover:bg-[#072640] rounded-lg shadow-sm transition-colors border border-[#0b3d66] cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5 text-[#e6a417]" />
-            Скачать DXF
+            {isDownloadingDxf ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#e6a417]" />
+            ) : (
+              <Download className="w-3.5 h-3.5 text-[#e6a417]" />
+            )}
+            <span>Скачать DXF</span>
           </button>
         </div>
       </div>
@@ -312,16 +460,35 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
         onMouseLeave={handleMouseUp}
         className="relative w-full aspect-[297/210] max-h-[660px] sm:max-h-[760px] bg-slate-200 p-2 sm:p-3 flex items-center justify-center cursor-grab active:cursor-grabbing select-none overflow-hidden"
       >
-        <svg
-          viewBox={`0 0 ${sheetWidth} ${sheetHeight}`}
-          className="w-full h-full shadow-2xl bg-white"
-          style={{
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-            transformOrigin: 'center center',
-            transition: isDragging ? 'none' : 'transform 0.12s ease-out',
-          }}
-        >
-          <defs>
+        {/* Индикатор САПР-генерации */}
+        {isCadLoading && (
+          <div className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-[#072640]/90 backdrop-blur text-white px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-xl border border-[#e6a417]/50 animate-fadeIn pointer-events-none">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#e6a417]" />
+            <span>САПР-генерация 3D B-Rep модели и HLR проекций...</span>
+          </div>
+        )}
+
+        {cadSvg ? (
+          <div
+            className="w-full h-full flex items-center justify-center pointer-events-auto [&>svg]:w-full [&>svg]:h-full [&>svg]:max-h-full [&>svg]:shadow-2xl [&>svg]:bg-white"
+            style={{
+              transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+              transformOrigin: 'center center',
+              transition: isDragging ? 'none' : 'transform 0.12s ease-out',
+            }}
+            dangerouslySetInnerHTML={{ __html: cadSvg }}
+          />
+        ) : (
+          <svg
+            viewBox={`0 0 ${sheetWidth} ${sheetHeight}`}
+            className="w-full h-full shadow-2xl bg-white"
+            style={{
+              transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+              transformOrigin: 'center center',
+              transition: isDragging ? 'none' : 'transform 0.12s ease-out',
+            }}
+          >
+            <defs>
             {/* Острая инженерная стрелка ЕСКД (1:3 по ГОСТ 2.307) */}
             <marker
               id="gostArrowA4"
@@ -1251,18 +1418,90 @@ export const TransformerBlueprintSvg: React.FC<Props> = ({ result }) => {
             </g>
           </g>
         </svg>
+        )}
       </div>
 
       {/* Информационная строка */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2 bg-slate-50 border-t border-slate-200 text-xs text-slate-600">
         <span className="flex items-center gap-1.5 font-medium">
           <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
-          Параметрический САПР-движок: 3 ортогональные проекции с точной проекционной связью ЕСКД.
+          {isCadServerOnline
+            ? `САПР-ядро OpenCascade B-Rep: точный аналитический HLR-рендеринг проекций без полигональных фасеток.`
+            : `Параметрический САПР-движок: 3 ортогональные проекции с точной проекционной связью ЕСКД.`}
         </span>
         <span className="font-semibold text-slate-700">
-          Формат А4 (297×210 мм) | Масштаб: {gostScaleText}
+          Формат А4 (297×210 мм) | Масштаб: {isCadServerOnline ? cadScaleText : gostScaleText}
         </span>
       </div>
+
+      {/* Модальное окно спецификации сборочных единиц (BOM) */}
+      {showBomModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+            <div className="flex items-center justify-between p-4 px-6 border-b border-slate-200 bg-slate-50">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-[#0b3d66]" />
+                <h3 className="text-base font-bold text-slate-900">
+                  Спецификация сборочных единиц (ГОСТ 2.108-68)
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowBomModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto space-y-4">
+              <p className="text-xs text-slate-500">
+                Позиционные выноски 1..{cadBom.length} соответствуют кругляшкам на чертеже общего вида, сгенерированном САПР-ядром.
+              </p>
+              <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead className="bg-[#072640] text-white">
+                    <tr>
+                      <th className="py-2.5 px-3 font-semibold text-center w-12">Поз.</th>
+                      <th className="py-2.5 px-3 font-semibold">Наименование</th>
+                      <th className="py-2.5 px-3 font-semibold text-center w-16">Кол-во</th>
+                      <th className="py-2.5 px-3 font-semibold">Обозначение / Стандарт</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {cadBom.map((item) => (
+                      <tr key={item.item_number} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-2 px-3 text-center font-bold text-slate-900 bg-slate-50">
+                          {item.item_number}
+                        </td>
+                        <td className="py-2 px-3 text-slate-800 font-medium">
+                          {item.description}
+                        </td>
+                        <td className="py-2 px-3 text-center font-semibold text-slate-700">
+                          {item.quantity}
+                        </td>
+                        <td className="py-2 px-3 font-mono text-[11px] text-slate-600">
+                          {item.part_number}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="p-4 px-6 border-t border-slate-200 bg-slate-50 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowBomModal(false)}
+                className="px-4 py-2 bg-[#0b3d66] hover:bg-[#072640] text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+              >
+                Закрыть спецификацию
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

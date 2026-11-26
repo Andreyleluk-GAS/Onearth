@@ -7,6 +7,7 @@ export * from './types';
 export * from './pricingConfig';
 export * from './promptParser';
 export * from './dxfGenerator';
+export * from './cadEngineApi';
 
 export function calculateTransformer(
   input: TransformerCalculationInput,

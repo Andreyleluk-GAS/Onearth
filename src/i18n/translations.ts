@@ -16,7 +16,7 @@ export const TRANSLATIONS = {
       directSourcing: 'Прямой подбор китайских заводов электрооборудования',
       tagline: 'Трансформаторы из Китая',
       callUs: 'Позвонить',
-      phone: '+7 (343) 123-45-67',
+      phone: '+7 (343) 226-98-89',
       email: 'info@hubeienergy.ru',
     },
     hero: {
@@ -348,7 +348,7 @@ export const TRANSLATIONS = {
       directSourcing: 'Direct Sourcing from Chinese Power Equipment Factories',
       tagline: 'Transformers from China',
       callUs: 'Call Us',
-      phone: '+7 (343) 123-45-67',
+      phone: '+7 (343) 226-98-89',
       email: 'info@hubeienergy.ru',
     },
     hero: {
@@ -680,7 +680,7 @@ export const TRANSLATIONS = {
       directSourcing: '专业对接中国输变电设备制造工厂',
       tagline: '中国电力变压器出口',
       callUs: '电话咨询',
-      phone: '+7 (343) 123-45-67',
+      phone: '+7 (343) 226-98-89',
       email: 'info@hubeienergy.ru',
     },
     hero: {

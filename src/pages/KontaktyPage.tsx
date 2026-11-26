@@ -175,10 +175,10 @@ export const KontaktyPage: React.FC<Props> = () => {
                 <div>
                   <span className="text-slate-400 block text-[11px]">{t.kontakty.directPhone}</span>
                   <a
-                    href="tel:+73431234567"
+                    href="tel:+73432269889"
                     className="text-base font-bold text-navy hover:text-[#e6a417] transition-colors"
                   >
-                    +7 (343) 123-45-67
+                    +7 (343) 226-98-89
                   </a>
                   <span className="text-[11px] text-slate-400 block mt-0.5">
                     {language === 'zh' ? '周一至周五 09:00 - 18:00 (UTC+5)' : language === 'en' ? 'Mon–Fri 09:00 – 18:00 (UTC+5)' : 'Пн–Пт с 09:00 до 18:00 (МСК+2)'}
@@ -387,7 +387,7 @@ export const KontaktyPage: React.FC<Props> = () => {
                       </button>
 
                       <a
-                        href="tel:+73431234567"
+                        href="tel:+73432269889"
                         className="bg-[#fff7e6] hover:bg-[#ffeed1] text-[#935d03] px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5"
                       >
                         <Phone className="w-3.5 h-3.5 text-[#e6a417]" />

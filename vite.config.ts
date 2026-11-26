@@ -9,7 +9,19 @@ export default defineConfig({
     port: 3000,
     open: false,
     watch: {
-      ignored: ['**/start_data/**', '**/Feedback/**', '**/.git/**'],
+      ignored: [
+        '**/start_data/**',
+        '**/Feedback/**',
+        '**/.git/**',
+        '**/.agents/**',
+        '**/_ONLINE_CAD/**',
+        '**/.venv/**',
+        '**/*.zip',
+        '**/*.step',
+        '**/*.stp',
+        '**/*.iges',
+        '**/__pycache__/**',
+      ],
     },
   },
   build: {

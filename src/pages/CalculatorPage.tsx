@@ -128,7 +128,7 @@ export const CalculatorPage: React.FC<Props> = ({
               </span>
               <span className="flex items-center gap-1.5 whitespace-nowrap">
                 <CheckCircle2 className="w-4 h-4 text-[#e6a417]" />
-                Чертеж DXF для AutoCAD / nanoCAD
+                Чертеж DXF, PDF и 3D STEP
               </span>
               <span className="flex items-center gap-1.5 whitespace-nowrap">
                 <CheckCircle2 className="w-4 h-4 text-[#e6a417]" />
@@ -184,7 +184,7 @@ export const CalculatorPage: React.FC<Props> = ({
               </h2>
             </div>
             <span className="text-xs text-slate-500 font-medium">
-              3 ортогональные проекции • Штамп завода • Выгрузка в AutoCAD (DXF R12) и PDF
+              3 ортогональные проекции • Штамп завода • Выгрузка в AutoCAD (DXF), PDF и 3D STEP
             </span>
           </div>
 
@@ -341,7 +341,7 @@ export const CalculatorPage: React.FC<Props> = ({
               Запросить ТКП завода
             </button>
             <a
-              href="tel:+73431234567"
+              href="tel:+73432269889"
               className="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-sm transition-colors flex items-center gap-2"
             >
               <Phone className="w-4 h-4 text-[#e6a417]" />

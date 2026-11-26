@@ -355,13 +355,13 @@ const PAGES_TO_PRERENDER = [
   {
     route: '/kontakty/',
     title: 'Контакты и реквизиты — Hubei Onearth Trading Company Limited',
-    description: 'Контакты официального представителя Hubei Onearth Trading Company Limited: телефон +7 (343) 123-45-67, e-mail info@hubeienergy.ru. Прямые поставки трансформаторов из КНР.',
+    description: 'Контакты официального представителя Hubei Onearth Trading Company Limited: телефон +7 (343) 226-98-89, e-mail info@hubeienergy.ru. Прямые поставки трансформаторов из КНР.',
     h1: 'Контакты и реквизиты компании',
     content: `
       <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
         <h1>Контакты и реквизиты компании</h1>
         <p class="text-base text-slate-700 leading-relaxed">
-          Hubei Onearth Trading Company Limited. Телефон: +7 (343) 123-45-67. E-mail: info@hubeienergy.ru. Официальный партнер китайских заводов электрооборудования.
+          Hubei Onearth Trading Company Limited. Телефон: +7 (343) 226-98-89. E-mail: info@hubeienergy.ru. Официальный партнер китайских заводов электрооборудования.
         </p>
       </div>
     `,

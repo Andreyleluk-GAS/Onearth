@@ -54,12 +54,12 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
 
           <div className="flex items-center gap-3 sm:gap-4 ml-auto">
             <a
-              href="tel:+73431234567"
+              href="tel:+73432269889"
               onClick={() => trackMetrikaGoal('phone_click', { location: 'header' })}
               className="hidden xs:flex items-center gap-1.5 text-white hover:text-[#e6a417] font-bold transition-colors"
             >
               <Phone className="w-3.5 h-3.5 text-[#e6a417]" />
-              +7 (343) 123-45-67
+              +7 (343) 226-98-89
             </a>
             <a
               href="mailto:info@hubeienergy.ru"
@@ -129,7 +129,7 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
                   {/* Mega-Dropdown Menu */}
                   {isCatalogDropdownOpen && (
                     <div className="absolute top-full left-0 w-[470px] max-h-[82vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-surface-border p-3.5 pt-2.5 z-50 animate-fadeIn">
-                      {/* Карточка перехода в Онлайн-расчет CAD в шапке выпадающего каталога */}
+                      {/* Единая карточка перехода в Онлайн-расчет и САПР ЕСКД */}
                       <button
                         type="button"
                         onClick={() => handleNav('/calculator-tr')}
@@ -141,10 +141,10 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
                           </div>
                           <div>
                             <div className="text-xs font-black text-white flex items-center gap-1.5">
-                              <span>Онлайн-расчет CAD</span>
-                              <span className="text-[9px] bg-[#e6a417] text-[#072640] font-black px-1.5 py-0.5 rounded uppercase">DXF</span>
+                              <span>Онлайн-расчет и чертежи ЕСКД</span>
+                              <span className="text-[9px] bg-[#e6a417] text-[#072640] font-black px-1.5 py-0.5 rounded uppercase">CAD / DXF</span>
                             </div>
-                            <div className="text-[11px] text-slate-200">САПР-чертеж по ГОСТ 2.301 и расчет активной части</div>
+                            <div className="text-[11px] text-slate-200">САПР-чертеж по ГОСТ 2.301 и расчет параметров</div>
                           </div>
                         </div>
                         <ArrowRight className="w-4 h-4 text-[#e6a417] group-hover/cad:translate-x-1 transition-transform shrink-0" />
@@ -286,12 +286,12 @@ export const Header: React.FC<Props> = ({ currentPath, onNavigate, onOpenQuoteMo
               {t.nav.rfq}
             </button>
             <a
-              href="tel:+73431234567"
+              href="tel:+73432269889"
               onClick={() => trackMetrikaGoal('phone_click', { location: 'header_mobile' })}
               className="w-full bg-slate-100 text-navy py-2 rounded-lg font-semibold text-xs text-center flex items-center justify-center gap-1.5"
             >
               <Phone className="w-3.5 h-3.5 text-[#e6a417]" />
-              {t.nav.callUs}: +7 (343) 123-45-67
+              {t.nav.callUs}: +7 (343) 226-98-89
             </a>
           </div>
         </div>

@@ -464,10 +464,10 @@ export const CategoryDetailPage: React.FC<Props> = ({
               {t.nav.rfq}
             </button>
             <a
-              href="tel:+73431234567"
+              href="tel:+73432269889"
               className="bg-white hover:bg-slate-50 text-navy border border-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors"
             >
-              +7 (343) 123-45-67
+              +7 (343) 226-98-89
             </a>
           </div>
         </div>

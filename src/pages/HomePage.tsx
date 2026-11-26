@@ -345,10 +345,10 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenQuoteModal }) => {
               {t.bottomCta.btn}
             </button>
             <a
-              href="tel:+73431234567"
+              href="tel:+73432269889"
               className="bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-xl font-bold text-xs border border-white/20 text-center transition-colors"
             >
-              +7 (343) 123-45-67
+              +7 (343) 226-98-89
             </a>
           </div>
         </div>

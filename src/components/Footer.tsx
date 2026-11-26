@@ -139,12 +139,12 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal, onOpenCr
 
             <div className="space-y-2 text-xs">
               <a
-                href="tel:+73431234567"
+                href="tel:+73432269889"
                 onClick={() => trackMetrikaGoal('phone_click', { location: 'footer' })}
                 className="flex items-center gap-2 text-white hover:text-[#e6a417] font-bold text-sm transition-colors"
               >
                 <Phone className="w-4 h-4 text-[#e6a417]" />
-                +7 (343) 123-45-67
+                +7 (343) 226-98-89
               </a>
 
               <a

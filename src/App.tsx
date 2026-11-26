@@ -7,6 +7,7 @@ import { HomePage } from './pages/HomePage';
 import { CatalogPage } from './pages/CatalogPage';
 import { CategoryDetailPage } from './pages/CategoryDetailPage';
 import { CalculatorPage } from './pages/CalculatorPage';
+import { OnlineCadPage } from './pages/OnlineCadPage';
 import { PoTzPage } from './pages/PoTzPage';
 import { PostavkaPage } from './pages/PostavkaPage';
 import { KontaktyPage } from './pages/KontaktyPage';
@@ -190,6 +191,16 @@ export const App: React.FC = () => {
       return <CalculatorPage onNavigate={navigate} onOpenQuoteModal={openQuoteModal} />;
     }
 
+    // 4.2. Parametric CAD GA Drawing System (/online-cad)
+    if (
+      cleanPath === '/online-cad' ||
+      cleanPath === '/online-cad.html' ||
+      cleanPath === '/cad' ||
+      cleanPath === '/cad.html'
+    ) {
+      return <OnlineCadPage onNavigate={navigate} onOpenQuoteModal={openQuoteModal} />;
+    }
+
     // 5. Delivery & Import (поставка)
     if (cleanPath === '/postavka' || cleanPath === '/postavka.html') {
       return <PostavkaPage onNavigate={navigate} onOpenQuoteModal={openQuoteModal} />;
@@ -286,7 +297,7 @@ export const App: React.FC = () => {
         </button>
 
         <a
-          href="tel:+73431234567"
+          href="tel:+73432269889"
           className="flex-1 py-1 flex flex-col items-center text-[10px] font-bold text-slate-600"
         >
           <Phone className="w-4 h-4 mb-0.5 text-[#e6a417]" />
