@@ -159,6 +159,13 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenQuoteModal, onOpenCr
               <div className="flex items-start gap-2 text-slate-300 pt-1">
                 <MapPin className="w-4 h-4 text-[#e6a417] shrink-0 mt-0.5" />
                 <span>
+                  No.9-1, Third Group, Sanyuan, Huilong, Hanchuan, Xiaogan city, Hubei province, China
+                </span>
+              </div>
+
+              <div className="flex items-start gap-2 text-slate-300 pt-1">
+                <ShieldCheck className="w-4 h-4 text-[#e6a417] shrink-0 mt-0.5" />
+                <span>
                   {t.nav.fcaBadge}
                 </span>
               </div>

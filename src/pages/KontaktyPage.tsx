@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send, Copy, CheckCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, ShieldCheck, Send, Copy, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { crmService } from '../services/crmService';
 import { trackMetrikaGoal } from '../services/yandexMetrika';
@@ -188,6 +188,20 @@ export const KontaktyPage: React.FC<Props> = () => {
 
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#0b3d66] flex items-center justify-center shrink-0">
+                  <MapPin className="w-4 h-4 text-[#e6a417]" />
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[11px]">
+                    {language === 'zh' ? '地址' : language === 'en' ? 'Address' : 'Адрес'}
+                  </span>
+                  <span className="font-semibold text-slate-800 leading-snug block">
+                    No.9-1, Third Group, Sanyuan, Huilong, Hanchuan, Xiaogan city, Hubei province, China
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#0b3d66] flex items-center justify-center shrink-0">
                   <Mail className="w-4 h-4 text-[#e6a417]" />
                 </div>
                 <div>
@@ -206,7 +220,7 @@ export const KontaktyPage: React.FC<Props> = () => {
 
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#0b3d66] flex items-center justify-center shrink-0">
-                  <MapPin className="w-4 h-4 text-[#e6a417]" />
+                  <ShieldCheck className="w-4 h-4 text-[#e6a417]" />
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[11px]">{t.kontakty.deliveryBasis}</span>
